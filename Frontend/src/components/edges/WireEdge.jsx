@@ -1,0 +1,100 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { BaseEdge, getSmoothStepPath } from "@xyflow/react";
+import { useCircuit } from "../../context/CircuitContext";
+
+const WireEdge = ({
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    style = {},
+    markerEnd,
+}) => {
+    const { nodes, setNodes, edges, setEdges } = useCircuit();
+    const [edgeValue, setEdgeValue] = useState(false);
+    const [edgePath] = getSmoothStepPath({
+        sourceX,
+        sourceY,
+        sourcePosition,
+        targetX,
+        targetY,
+        targetPosition,
+    });
+
+    const edge = useMemo(() => edges.find((edge) => edge.id == id), [edges]);
+    const sourceNode = useMemo(
+        () => nodes.find((node) => node.id == edge?.source),
+        [nodes]
+    );
+    const TargetNode = useMemo(
+        () => nodes.find((node) => node.id == edge?.target),
+        [nodes]
+    );
+
+    // To get the edgeValue when sourceNode updated
+    useEffect(() => {
+        console.log("Updating edge");
+
+        const val = sourceNode?.data?.outputs[edge.sourceHandle];
+        if (val != edgeValue) {
+            setEdgeValue(val);
+            setEdges((eds) =>
+                eds.map((edge) => {
+                    return edge?.id == id
+                        ? {
+                              ...edge,
+                              data: {
+                                  ...edge.data,
+                                  value: val,
+                              },
+                          }
+                        : edge;
+                })
+            );
+        }
+    }, [sourceNode, edgeValue, id, setEdges]);
+
+    // To update the target node when edge updated
+    useEffect(() => {
+        // Update the target node using the edge value
+        console.log("Updating the target node:");
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id == TargetNode?.id) {
+                    // Update the input which matches the targetHandle name
+                    node.data.inputs[edge.targetHandle] = edgeValue;
+                    const newInputs = node.data?.inputs;
+                    const newOutputs = node.data?.logic(newInputs);
+                    return {
+                        ...node,
+                        data: {
+                            ...node.data,
+                            inputs: newInputs,
+                            outputs: newOutputs,
+                        },
+                    };
+                } else {
+                    return node;
+                }
+            })
+        );
+    }, [edgeValue]);
+
+    return (
+        <BaseEdge
+            path={edgePath}
+            markerEnd={markerEnd}
+            style={{
+                ...style,
+                stroke: edgeValue ? "#07ed44" : "#6b6261",
+                strokeWidth: 3,
+                overlay: "revert",
+            }}
+        />
+    );
+};
+
+export default WireEdge;

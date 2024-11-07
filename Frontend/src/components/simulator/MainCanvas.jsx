@@ -20,17 +20,40 @@ import NorGateNode from "../nodes/gates/NORGateNode";
 import TffNode from "../nodes/sequential/TFFNode";
 import JKFFNode from "../nodes/sequential/JKFFNode";
 import DFFNode from "../nodes/sequential/DFFNode";
+import XorGateNode from "../nodes/gates/XORGateNode";
+import XnorGateNode from "../nodes/gates/XNORGateNode";
+import SevenSegmentDisplayNode from "../nodes/outputs/SevenSegmentDisplay";
+import HalfAdderNode from "../nodes/combinational/HalfAdderNode";
+import FullAdderNode from "../nodes/combinational/FullAdderNode";
+import FourBitFullAdderNode from "../nodes/combinational/FourBitFullAdderNode";
+import TwoToOneMuxNode from "../nodes/combinational/TwoToOneMUXNode";
+import FourToOneMuxNode from "../nodes/combinational/FourToOneMUXNode";
+import EightToOneMuxNode from "../nodes/combinational/EightToOneMUXNode";
 
 // Define NodeTypes and EdgeTypes
 const nodeTypes = {
+    // Inputs
+    ConstantInput: ConstantInputNode,
+    // Outputs
+    LED: LEDNode,
+    SevenSegmentDisplay: SevenSegmentDisplayNode,
+    // Gates
     NOTGate: NotGateNode,
     ORGate: OrGateNode,
     ANDGate: AndGateNode,
     NANDGate: NandGateNode,
     NORGate: NorGateNode,
-    ConstantInput: ConstantInputNode,
+    XORGate: XorGateNode,
+    XNORGate: XnorGateNode,
+    // Combinationals
+    HalfAdder: HalfAdderNode,
+    FullAdder: FullAdderNode,
+    FourBitFullAdder: FourBitFullAdderNode,
+    TwoToOneMUX: TwoToOneMuxNode,
+    FourToOneMUX: FourToOneMuxNode,
+    EightToOneMUX: EightToOneMuxNode,
+    // Sequentials
     CLK: ClockNode,
-    LED: LEDNode,
     TFlipFlop: TffNode,
     JKFlipFlop: JKFFNode,
     DFlipFlop: DFFNode,
@@ -54,7 +77,7 @@ function MainCanvas() {
     } = useCircuit();
 
     return (
-        <div className="w-full grow bg-zinc-950">
+        <div className="w-full grow bg-zinc-900">
             <ReactFlow
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
@@ -69,7 +92,7 @@ function MainCanvas() {
                 defaultEdgeOptions={{ type: "Wire" }}
                 onNodeDragStop={onNodeDragStop}
                 minZoom={0.1}
-                maxZoom={3}
+                maxZoom={4}
             >
                 <Controls />
                 <Background

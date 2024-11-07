@@ -29,14 +29,14 @@ const WireEdge = ({
         () => nodes.find((node) => node.id == edge?.source),
         [nodes]
     );
-    const TargetNode = useMemo(
+    const targetNode = useMemo(
         () => nodes.find((node) => node.id == edge?.target),
         [nodes]
     );
 
     // To get the edgeValue when sourceNode updated
     useEffect(() => {
-        console.log("Updating edge");
+        // console.log("Updating edge");
 
         const val = sourceNode?.data?.outputs[edge.sourceHandle];
         if (val != edgeValue) {
@@ -60,10 +60,10 @@ const WireEdge = ({
     // To update the target node when edge updated
     useEffect(() => {
         // Update the target node using the edge value
-        console.log("Updating the target node:");
+        // console.log("Updating the target node:");
         setNodes((nds) =>
             nds.map((node) => {
-                if (node.id == TargetNode?.id) {
+                if (node?.id == targetNode?.id) {
                     // Update the input which matches the targetHandle name
                     node.data.inputs[edge.targetHandle] = edgeValue;
                     const newInputs = node.data?.inputs;
@@ -82,6 +82,33 @@ const WireEdge = ({
             })
         );
     }, [edgeValue]);
+
+    // To update the target node when edge unmounts
+    useEffect(() => {
+        return () =>
+            setNodes((nds) =>
+                nds.map((node) => {
+                    if (node?.id == targetNode?.id) {
+                        const newInputs = {
+                            ...node.data.inputs,
+                        };
+                        newInputs[edge.targetHandle] = false;
+                        const newOutputs = node.data.logic(newInputs);
+
+                        return {
+                            ...node,
+                            data: {
+                                ...node.data,
+                                inputs: newInputs,
+                                outputs: newOutputs,
+                            },
+                        };
+                    } else {
+                        return node;
+                    }
+                })
+            );
+    }, []);
 
     return (
         <BaseEdge

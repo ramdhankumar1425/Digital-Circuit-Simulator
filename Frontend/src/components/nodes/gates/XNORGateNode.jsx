@@ -1,14 +1,20 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const NorGateNode = () => {
+const XnorGateNode = () => {
     return (
         <div className="relative bg-red- 500">
             {/* SVG */}
             <svg width="50" height="50" viewBox="0 0 50 50">
                 <path
-                    d="M 0 1 C 0 1, 25 1, 45 25 C 45 25, 25 49, 0 49 C 0 49, 15 25, 0 1"
+                    d="M 5 1 C 5 1, 25 1, 45 25 C 45 25, 25 49, 5 49 C 5 49, 20 25, 5 1"
                     fill="white"
+                    stroke="black"
+                    strokeWidth="3"
+                />
+                <path
+                    d="M 0 1 C 0 1, 15 25, 0 49"
+                    fill="none"
                     stroke="black"
                     strokeWidth="3"
                 />
@@ -50,4 +56,4 @@ const NorGateNode = () => {
     );
 };
 
-export default NorGateNode;
+export default XnorGateNode;

@@ -21,6 +21,54 @@ import "@xyflow/react/dist/style.css";
 const CircuitContext = createContext();
 
 const nodeRegistry = {
+    // Inputs
+    ConstantInput: {
+        category: "input",
+        inputs: [{ name: "in1" }],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => ({ out: inputs.in1 }),
+    },
+    // Outputs
+    LED: {
+        category: "output",
+        inputs: [{ name: "in1" }],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => ({ out: inputs.in1 }),
+    },
+    SevenSegmentDisplay: {
+        category: "display",
+        inputs: [
+            { name: "a" },
+            { name: "b" },
+            { name: "c" },
+            { name: "d" },
+            { name: "e" },
+            { name: "f" },
+            { name: "g" },
+            { name: "dp" },
+        ],
+        outputs: [
+            { name: "a" },
+            { name: "b" },
+            { name: "c" },
+            { name: "d" },
+            { name: "e" },
+            { name: "f" },
+            { name: "g" },
+            { name: "dp" },
+        ],
+        logic: (inputs) => ({
+            a: inputs.a || false,
+            b: inputs.b || false,
+            c: inputs.c || false,
+            d: inputs.d || false,
+            e: inputs.e || false,
+            f: inputs.f || false,
+            g: inputs.g || false,
+            dp: inputs.dp || false,
+        }),
+    },
+    // Gates
     NOTGate: {
         category: "gate",
         inputs: [{ name: "in1" }],
@@ -51,20 +99,142 @@ const nodeRegistry = {
         outputs: [{ name: "out" }],
         logic: (inputs) => ({ out: !(inputs.in1 || inputs.in2) }),
     },
-    ConstantInput: {
-        category: "input",
-        inputs: [{ name: "in1" }],
+    XORGate: {
+        category: "gate",
+        inputs: [{ name: "in1" }, { name: "in2" }],
         outputs: [{ name: "out" }],
-        logic: (inputs) => ({ out: inputs.in1 }),
+        logic: (inputs) => ({ out: inputs.in1 !== inputs.in2 }),
     },
+    XNORGate: {
+        category: "gate",
+        inputs: [{ name: "in1" }, { name: "in2" }],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => ({ out: inputs.in1 === inputs.in2 }),
+    },
+    // Combinationals
+    HalfAdder: {
+        category: "adder",
+        inputs: [{ name: "A" }, { name: "B" }],
+        outputs: [{ name: "S" }, { name: "C" }],
+        logic: (inputs) => ({
+            S: inputs.A !== inputs.B,
+            C: inputs.A && inputs.B,
+        }),
+    },
+    FullAdder: {
+        category: "adder",
+        inputs: [{ name: "A" }, { name: "B" }, { name: "Cin" }],
+        outputs: [{ name: "S" }, { name: "Cout" }],
+        logic: (inputs) => {
+            const sum = (inputs.A !== inputs.B) !== inputs.Cin;
+            const carryOut =
+                (inputs.A && inputs.B) ||
+                (inputs.B && inputs.Cin) ||
+                (inputs.A && inputs.Cin);
+            return { S: sum, Cout: carryOut };
+        },
+    },
+    FourBitFullAdder: {
+        category: "adder",
+        inputs: [
+            { name: "A0" },
+            { name: "A1" },
+            { name: "A2" },
+            { name: "A3" },
+            { name: "B0" },
+            { name: "B1" },
+            { name: "B2" },
+            { name: "B3" },
+            { name: "Cin" },
+        ],
+        outputs: [
+            { name: "S0" },
+            { name: "S1" },
+            { name: "S2" },
+            { name: "S3" },
+            { name: "Cout" },
+        ],
+        logic: (inputs) => {
+            let carry = inputs.Cin;
+            const sum = [];
+
+            for (let i = 0; i < 4; i++) {
+                const A = inputs[`A${i}`];
+                const B = inputs[`B${i}`];
+                sum[i] = (A !== B) !== carry;
+                carry = (A && B) || (A && carry) || (B && carry);
+            }
+
+            return {
+                S0: sum[0],
+                S1: sum[1],
+                S2: sum[2],
+                S3: sum[3],
+                Cout: carry,
+            };
+        },
+    },
+    TwoToOneMUX: {
+        category: "mux",
+        inputs: [{ name: "D0" }, { name: "D1" }, { name: "S" }],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => ({
+            out: inputs.S ? inputs.D1 : inputs.D0,
+        }),
+    },
+    FourToOneMUX: {
+        category: "mux",
+        inputs: [
+            { name: "D0" },
+            { name: "D1" },
+            { name: "D2" },
+            { name: "D3" },
+            { name: "S0" },
+            { name: "S1" },
+        ],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => {
+            const select = (inputs.S1 << 1) | inputs.S0;
+            return {
+                out: [inputs.D0, inputs.D1, inputs.D2, inputs.D3][select],
+            };
+        },
+    },
+    EightToOneMUX: {
+        category: "mux",
+        inputs: [
+            { name: "D0" },
+            { name: "D1" },
+            { name: "D2" },
+            { name: "D3" },
+            { name: "D4" },
+            { name: "D5" },
+            { name: "D6" },
+            { name: "D7" },
+            { name: "S0" },
+            { name: "S1" },
+            { name: "S2" },
+        ],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => {
+            const select = (inputs.S2 << 2) | (inputs.S1 << 1) | inputs.S0;
+            return {
+                out: [
+                    inputs.D0,
+                    inputs.D1,
+                    inputs.D2,
+                    inputs.D3,
+                    inputs.D4,
+                    inputs.D5,
+                    inputs.D6,
+                    inputs.D7,
+                ][select],
+            };
+        },
+    },
+    // Sequentials
     CLK: {
         category: "clock",
-        inputs: [{ name: "in1" }],
-        outputs: [{ name: "out" }],
-        logic: (inputs) => ({ out: inputs.in1 }),
-    },
-    LED: {
-        category: "output",
         inputs: [{ name: "in1" }],
         outputs: [{ name: "out" }],
         logic: (inputs) => ({ out: inputs.in1 }),
@@ -198,8 +368,6 @@ export const CircuitProvider = ({ children }) => {
                     config.inputs.map((input) => [input.name, false])
                 );
                 const initialOutputs = config.logic(initialInputs);
-                console.log("initialInputs:", initialInputs);
-                console.log("initialOutputs:", initialOutputs);
 
                 if (config.category === "flip-flop") {
                     const state = config.state;

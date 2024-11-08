@@ -1,11 +1,24 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import { useCircuit } from "../../../context/CircuitContext";
 
-const NotGateNode = () => {
+const NotGateNode = (props) => {
+    const { handlePositions } = useCircuit();
+
     return (
-        <div className="relative w-[50px] h-[50px]">
+        <div className="relative">
             {/* SVG for NOT gate */}
-            <svg width="50" height="50" viewBox="0 0 50 50">
+            <svg
+                width="50"
+                // To update the edge path on rotation (no other method found...)
+                height={
+                    props.data.rotation === 90 || props.data.rotation === 270
+                        ? "50"
+                        : "50.025"
+                }
+                viewBox="0 0 50 50"
+                transform={`rotate(${props.data.rotation})`}
+            >
                 {/* Triangle for NOT gate */}
                 <polygon
                     points="0,0 40,25 0,50"
@@ -29,7 +42,7 @@ const NotGateNode = () => {
             <Handle
                 type="target"
                 id="in1"
-                position={Position.Left}
+                position={handlePositions.left[props.data.rotation]}
                 className="bg-[#555] hover:bg-green-500"
             />
 
@@ -37,7 +50,7 @@ const NotGateNode = () => {
             <Handle
                 type="source"
                 id="out"
-                position={Position.Right}
+                position={handlePositions.right[props.data.rotation]}
                 className="bg-[#555] hover:bg-green-500"
             />
         </div>

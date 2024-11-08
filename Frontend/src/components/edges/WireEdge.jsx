@@ -36,8 +36,6 @@ const WireEdge = ({
 
     // To get the edgeValue when sourceNode updated
     useEffect(() => {
-        // console.log("Updating edge");
-
         const val = sourceNode?.data?.outputs[edge.sourceHandle];
         if (val != edgeValue) {
             setEdgeValue(val);
@@ -60,7 +58,6 @@ const WireEdge = ({
     // To update the target node when edge updated
     useEffect(() => {
         // Update the target node using the edge value
-        // console.log("Updating the target node:");
         setNodes((nds) =>
             nds.map((node) => {
                 if (node?.id == targetNode?.id) {

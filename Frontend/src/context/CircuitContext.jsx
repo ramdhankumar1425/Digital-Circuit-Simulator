@@ -7,13 +7,10 @@ import {
     useMemo,
 } from "react";
 import {
-    Background,
-    BackgroundVariant,
-    Controls,
-    ReactFlow,
     applyNodeChanges,
     applyEdgeChanges,
     addEdge,
+    Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -232,6 +229,137 @@ const nodeRegistry = {
             };
         },
     },
+    BCDTo7SegmentDecoder: {
+        category: "decoder",
+        inputs: [
+            { name: "A3" },
+            { name: "A2" },
+            { name: "A1" },
+            { name: "A0" },
+        ],
+        outputs: [
+            { name: "a" },
+            { name: "b" },
+            { name: "c" },
+            { name: "d" },
+            { name: "e" },
+            { name: "f" },
+            { name: "g" },
+        ],
+        logic: (inputs) => {
+            const A3 = inputs.A3;
+            const A2 = inputs.A2;
+            const A1 = inputs.A1;
+            const A0 = inputs.A0;
+
+            const segmentMap = {
+                0: {
+                    a: true,
+                    b: true,
+                    c: true,
+                    d: true,
+                    e: true,
+                    f: true,
+                    g: false,
+                },
+                1: {
+                    a: false,
+                    b: true,
+                    c: true,
+                    d: false,
+                    e: false,
+                    f: false,
+                    g: false,
+                },
+                2: {
+                    a: true,
+                    b: true,
+                    c: false,
+                    d: true,
+                    e: true,
+                    f: false,
+                    g: true,
+                },
+                3: {
+                    a: true,
+                    b: true,
+                    c: true,
+                    d: true,
+                    e: false,
+                    f: false,
+                    g: true,
+                },
+                4: {
+                    a: false,
+                    b: true,
+                    c: true,
+                    d: false,
+                    e: false,
+                    f: true,
+                    g: true,
+                },
+                5: {
+                    a: true,
+                    b: false,
+                    c: true,
+                    d: true,
+                    e: false,
+                    f: true,
+                    g: true,
+                },
+                6: {
+                    a: true,
+                    b: false,
+                    c: true,
+                    d: true,
+                    e: true,
+                    f: true,
+                    g: true,
+                },
+                7: {
+                    a: true,
+                    b: true,
+                    c: true,
+                    d: false,
+                    e: false,
+                    f: false,
+                    g: false,
+                },
+                8: {
+                    a: true,
+                    b: true,
+                    c: true,
+                    d: true,
+                    e: true,
+                    f: true,
+                    g: true,
+                },
+                9: {
+                    a: true,
+                    b: true,
+                    c: true,
+                    d: true,
+                    e: false,
+                    f: true,
+                    g: true,
+                },
+            };
+
+            const inputValue = (A3 << 3) | (A2 << 2) | (A1 << 1) | A0;
+
+            return (
+                segmentMap[inputValue] || {
+                    a: false,
+                    b: false,
+                    c: false,
+                    d: false,
+                    e: false,
+                    f: false,
+                    g: false,
+                }
+            );
+        },
+    },
     // Sequentials
     CLK: {
         category: "clock",
@@ -319,6 +447,36 @@ export const CircuitProvider = ({ children }) => {
     const [copiedNodes, setCopiedNodes] = useState([]);
     const [copiedEdges, setCopiedEdges] = useState([]);
 
+    // Handle positions for nodes based on rotation state
+    const handlePositions = {
+        // default positions
+        top: {
+            // rotation
+            0: Position.Top,
+            90: Position.Right,
+            180: Position.Bottom,
+            270: Position.Left,
+        },
+        bottom: {
+            0: Position.Bottom,
+            90: Position.Left,
+            180: Position.Top,
+            270: Position.Right,
+        },
+        left: {
+            0: Position.Left,
+            90: Position.Top,
+            180: Position.Right,
+            270: Position.Bottom,
+        },
+        right: {
+            0: Position.Right,
+            90: Position.Bottom,
+            180: Position.Left,
+            270: Position.Top,
+        },
+    };
+
     // Functions to handle Canvas change
     // For any change in nodes
     const onNodesChange = useCallback(
@@ -381,6 +539,7 @@ export const CircuitProvider = ({ children }) => {
                             outputs: initialOutputs,
                             logic: config.logic,
                             state,
+                            rotation: 0,
                         },
                     };
                     return nds.concat(newNode);
@@ -394,6 +553,7 @@ export const CircuitProvider = ({ children }) => {
                             inputs: initialInputs,
                             outputs: initialOutputs,
                             logic: config.logic,
+                            rotation: 0,
                         },
                     };
 
@@ -480,6 +640,26 @@ export const CircuitProvider = ({ children }) => {
         setCopiedNodes([]);
         setCopiedEdges([]);
     };
+    // Function to handle node rotation
+    const handleNodeRotation = () => {
+        setNodes((nds) =>
+            nds.map((node) =>
+                selectedNodes.includes(node.id)
+                    ? {
+                          ...node,
+                          data: {
+                              ...node.data,
+                              rotation: (node?.data?.rotation + 90) % 360,
+                          },
+                          measured: {
+                              ...node.measured,
+                              width: node.measured.width + 1,
+                          },
+                      }
+                    : node
+            )
+        );
+    };
     // Keydown event to handle key presses
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -495,6 +675,8 @@ export const CircuitProvider = ({ children }) => {
                 (event.key === "V" || event.key === "v")
             ) {
                 onPaste();
+            } else if (event.key === "R" || event.key === "r") {
+                handleNodeRotation();
             }
         };
 
@@ -571,6 +753,7 @@ export const CircuitProvider = ({ children }) => {
             selectedEdges,
             setNodes,
             setEdges,
+            handlePositions,
         }),
         [
             nodes,
@@ -583,6 +766,7 @@ export const CircuitProvider = ({ children }) => {
             onDrop,
             onSelectionChange,
             onNodeDragStop,
+            handlePositions,
         ]
     );
 

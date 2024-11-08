@@ -1,11 +1,42 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import { useCircuit } from "../../../context/CircuitContext";
 
-const XnorGateNode = () => {
+const XnorGateNode = (props) => {
+    const { handlePositions } = useCircuit();
+    const rotation = props.data.rotation;
+
+    // Calculate dynamic handle positions
+    const handleStyles = {
+        in1: {
+            ...(rotation === 0 && { top: "13px" }),
+            ...(rotation === 90 && { left: "13px" }),
+            ...(rotation === 180 && { top: "13px" }),
+            ...(rotation === 270 && { left: "13px" }),
+        },
+        in2: {
+            ...(rotation === 0 && { top: "37px" }),
+            ...(rotation === 90 && { left: "37px" }),
+            ...(rotation === 180 && { top: "37px" }),
+            ...(rotation === 270 && { left: "37px" }),
+        },
+        out: {
+            ...(rotation === 0 && { top: "25px" }),
+            ...(rotation === 90 && { left: "25px" }),
+            ...(rotation === 180 && { top: "25px" }),
+            ...(rotation === 270 && { left: "25px" }),
+        },
+    };
+
     return (
         <div className="relative bg-red- 500">
             {/* SVG */}
-            <svg width="50" height="50" viewBox="0 0 50 50">
+            <svg
+                width="50"
+                height={rotation === 90 || rotation === 270 ? "50" : "50.025"}
+                style={{ transform: `rotate(${rotation}deg)` }}
+                viewBox="0 0 50 50"
+            >
                 <path
                     d="M 5 1 C 5 1, 25 1, 45 25 C 45 25, 25 49, 5 49 C 5 49, 20 25, 5 1"
                     fill="white"
@@ -33,24 +64,25 @@ const XnorGateNode = () => {
             <Handle
                 type="target"
                 id="in1"
-                position={Position.Left}
-                className="bg-[#555] hover:bg-green-500"
-                style={{ position: "absolute", top: "13px" }}
+                position={handlePositions.left[rotation]}
+                className="bg-[#555] hover:bg-green-500 absolute"
+                style={handleStyles.in1}
             />
             <Handle
                 type="target"
                 id="in2"
-                position={Position.Left}
-                className="bg-[#555] hover:bg-green-500"
-                style={{ position: "absolute", top: "37px" }}
+                position={handlePositions.left[rotation]}
+                className="bg-[#555] hover:bg-green-500 absolute"
+                style={handleStyles.in2}
             />
 
             {/* Output handle on the right side */}
             <Handle
                 type="source"
                 id="out"
-                position={Position.Right}
-                className="bg-[#555] hover:bg-green-500"
+                position={handlePositions.right[rotation]}
+                className="bg-[#555] hover:bg-green-500 absolute"
+                style={handleStyles.out}
             />
         </div>
     );

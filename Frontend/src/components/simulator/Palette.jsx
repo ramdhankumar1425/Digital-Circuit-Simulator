@@ -214,6 +214,16 @@ const Palette = () => {
                     >
                         8 to 1 MUX
                     </div>
+                    {/* BCDTo7SegmentDecoder */}
+                    <div
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        onDragStart={(event) =>
+                            onDragStart(event, "BCDTo7SegmentDecoder")
+                        }
+                        draggable
+                    >
+                        BCD to 7segment
+                    </div>
                 </div>
                 {/* Sequentials */}
                 <p

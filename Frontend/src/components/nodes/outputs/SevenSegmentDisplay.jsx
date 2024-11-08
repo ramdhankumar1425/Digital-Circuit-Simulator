@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
-import { useCircuit } from "../../../context/CircuitContext";
 
 const SevenSegmentDisplayNode = (props) => {
     const [values, setValues] = useState({

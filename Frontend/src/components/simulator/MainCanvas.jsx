@@ -8,8 +8,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 // Import Nodes and Edges
-import NotGateNode from "../nodes/gates/NOTGateNode";
 import WireEdge from "../edges/WireEdge";
+import NotGateNode from "../nodes/gates/NOTGateNode";
 import ConstantInputNode from "../nodes/inputs/ConstantInput";
 import LEDNode from "../nodes/outputs/LEDNode";
 import OrGateNode from "../nodes/gates/ORGateNode";
@@ -29,6 +29,7 @@ import FourBitFullAdderNode from "../nodes/combinational/FourBitFullAdderNode";
 import TwoToOneMuxNode from "../nodes/combinational/TwoToOneMUXNode";
 import FourToOneMuxNode from "../nodes/combinational/FourToOneMUXNode";
 import EightToOneMuxNode from "../nodes/combinational/EightToOneMUXNode";
+import BCDTo7SegmentDecoderNode from "../nodes/combinational/BCDTo7SegmentDecoderNode";
 
 // Define NodeTypes and EdgeTypes
 const nodeTypes = {
@@ -52,6 +53,7 @@ const nodeTypes = {
     TwoToOneMUX: TwoToOneMuxNode,
     FourToOneMUX: FourToOneMuxNode,
     EightToOneMUX: EightToOneMuxNode,
+    BCDTo7SegmentDecoder: BCDTo7SegmentDecoderNode,
     // Sequentials
     CLK: ClockNode,
     TFlipFlop: TffNode,
@@ -93,6 +95,7 @@ function MainCanvas() {
                 onNodeDragStop={onNodeDragStop}
                 minZoom={0.1}
                 maxZoom={4}
+                fitView
             >
                 <Controls />
                 <Background

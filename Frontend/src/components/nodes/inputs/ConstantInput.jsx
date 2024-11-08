@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { Handle, Position } from "@xyflow/react";
+import React from "react";
+import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
 const ConstantInputNode = (props) => {
-    const { setNodes } = useCircuit();
+    const { setNodes, handlePositions } = useCircuit();
 
     const handleToggleOutput = () => {
         setNodes((prevNodes) =>
@@ -25,12 +25,18 @@ const ConstantInputNode = (props) => {
     };
 
     return (
-        <div
-            className="relative w-[50px] h-[50px]"
-            onClick={handleToggleOutput}
-        >
+        <div className="relative" onClick={handleToggleOutput}>
             {/* SVG */}
-            <svg width="50" height="50" viewBox="0 0 50 50">
+            <svg
+                width="50"
+                height={
+                    props.data.rotation === 90 || props.data.rotation === 270
+                        ? "50"
+                        : "50.025"
+                }
+                viewBox="0 0 50 50"
+                transform={`rotate(${props.data.rotation})`}
+            >
                 <polygon
                     points="0,0 0,50 50,50 50,0"
                     fill="white"
@@ -43,7 +49,7 @@ const ConstantInputNode = (props) => {
             <Handle
                 type="source"
                 id="out"
-                position={Position.Right}
+                position={handlePositions.right[props.data.rotation]}
                 className="bg-[#555] hover:bg-green-500"
             />
 

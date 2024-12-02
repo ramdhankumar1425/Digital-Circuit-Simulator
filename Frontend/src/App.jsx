@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CircuitProvider } from "./context/CircuitContext.jsx";
+import { Analytics } from "@vercel/analytics/react";
 // import pages and components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -68,6 +69,7 @@ const Layout = ({ children }) => {
                     <Footer />
                 </CircuitProvider>
             </AuthProvider>
+            <Analytics />
         </>
     );
 };

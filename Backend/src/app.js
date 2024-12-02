@@ -49,9 +49,14 @@ app.delete("/circuit", authGuard, handleDeleteCircuit);
 
 // app.post("/util/send-email", handleSendEmail);
 
+app.get("/", (req, res) => {
+    console.log("Request received on server");
+    res.status(200).json({ msg: "Server is working fine." });
+});
+
 app.get("/test", (req, res) => {
     console.log("Request received on test route");
-    res.json({ msg: "This is a test message from server" });
+    res.json({ msg: "This is a test message from server." });
 });
 
 module.exports = app;

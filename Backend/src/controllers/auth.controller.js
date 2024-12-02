@@ -21,6 +21,14 @@ const handleSignUp = async (req, res) => {
             return res.status(400).json({ msg: "Email already registered" });
         }
 
+        // Check for an already existing user with the same username
+        existingUser = await User.findOne({ username });
+
+        if (existingUser) {
+            console.log("Username already exists");
+            return res.status(400).json({ msg: "Username already exists" });
+        }
+
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -57,8 +65,8 @@ const handleLogin = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            console.log("User not found");
-            return res.status(404).json({ msg: "User not found" });
+            console.log("Invalid credentials");
+            return res.status(404).json({ msg: "Invalid credentials" });
         }
 
         // Compare the password with the hashed password in the database

@@ -9,7 +9,7 @@ mongoose
         console.log("MongoDB Connection Successful");
     })
     .catch((err) => {
-        console.error(err);
+        console.error("Error in connecting MongoDB:", err);
     });
 
 // start the server

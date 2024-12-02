@@ -37,7 +37,7 @@ function Toolbar() {
                     y: 50,
                 }}
             >
-                <aside className="absolute px-2 py-1 text-center bg-gray-900 border border-gray-700 flex gap-4 items-center">
+                <aside className="absolute px-2 py-1 text-center bg-gray-900 border border-gray-700 flex gap-2 sm:gap-4 items-center">
                     {/* Drag */}
                     <IoMoveSharp className="drag-handle text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-grab" />
 

@@ -2,20 +2,33 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { HiChevronDown } from "react-icons/hi";
+import { SlMenu } from "react-icons/sl";
 
-function Header() {
+const Header = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { isLoggedIn } = useAuth();
 
     return (
-        <nav className="w-full h-16 bg-gray-900 flex items-center justify-between px-20 text-gray-300 border-b border-gray-700">
+        <nav className="w-full h-16 bg-gray-900 flex items-center justify-between px-5 md:px-20 text-gray-300 border-b border-gray-700">
             {/* Logo */}
             <div className="text-xl font-bold">
                 <Link to="/" className="cursor-pointer">
                     DigitalVerse
                 </Link>
             </div>
+
+            {/* Hamburger Menu for Small Screens */}
+            <div className="md:hidden">
+                <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="text-gray-300 focus:outline-none flex items-center"
+                >
+                    <SlMenu className="font-bold text-lg" />
+                </button>
+            </div>
+
             {/* Links */}
-            <ul className="flex items-center gap-20 text-lg">
+            <ul className="hidden md:flex items-center gap-10 text-lg">
                 <li className="hover:text-gray-400 duration-100 cursor-pointer">
                     <Link to="/" className="block">
                         Home
@@ -44,9 +57,57 @@ function Header() {
                     )}
                 </li>
             </ul>
+
+            {/* Dropdown Menu */}
+            {isMenuOpen && (
+                <div className="absolute top-16 left-0 w-full bg-gray-900 shadow-lg md:hidden">
+                    <ul className="flex flex-col items-center gap-5 py-5 text-lg">
+                        <li className="hover:text-gray-400 duration-100 cursor-pointer">
+                            <Link
+                                to="/"
+                                className="block"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Home
+                            </Link>
+                        </li>
+                        <li className="hover:text-gray-400 duration-100 cursor-pointer">
+                            <Link
+                                to="/simulator"
+                                className="block"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Simulator
+                            </Link>
+                        </li>
+                        <li className="hover:text-gray-400 duration-100 cursor-pointer">
+                            <Link
+                                to="/contact"
+                                className="block"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Contact Us
+                            </Link>
+                        </li>
+                        <li className="hover:text-gray-400 duration-100 cursor-pointer">
+                            {isLoggedIn ? (
+                                <UserDropDown />
+                            ) : (
+                                <Link
+                                    to="/login"
+                                    className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2 text-center"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Login
+                                </Link>
+                            )}
+                        </li>
+                    </ul>
+                </div>
+            )}
         </nav>
     );
-}
+};
 
 function UserDropDown() {
     const { user, handleLogout } = useAuth();

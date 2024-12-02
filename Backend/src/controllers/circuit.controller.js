@@ -121,6 +121,11 @@ const handleDeleteCircuit = async (req, res) => {
         await circuit.deleteOne();
         console.log("Circuit deleted successfully");
 
+        // Remove the circuit from the user's circuits array
+        await User.findByIdAndUpdate(userId, {
+            $pull: { circuits: circuitId },
+        });
+
         return res.status(200).json({
             msg: "Circuit deleted successfully",
         });

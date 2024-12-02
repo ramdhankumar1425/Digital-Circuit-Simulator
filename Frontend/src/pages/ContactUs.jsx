@@ -3,7 +3,7 @@ import { sendMail } from "../Utils/SendMail";
 
 function ContactUs() {
     return (
-        <div className="w-full flex justify-center items-center py-28 bg-gray-100">
+        <div className="w-full flex justify-center items-center py-20 md:py-28 px-5 bg-gray-100">
             {/* Contact Form */}
             <form
                 className="w-full max-w-md bg-white p-6 rounded-lg shadow-md flex flex-col gap-4"

@@ -62,22 +62,9 @@ function ProfilePage() {
                             {userData.circuits.map((circuit) => (
                                 <li
                                     key={circuit._id}
-                                    className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
+                                    className="flex flex-wrap justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
                                 >
                                     <div className="flex-grow">
-                                        <h4 className="text-lg font-medium text-gray-700">
-                                            <input
-                                                type="text"
-                                                value={circuit.name}
-                                                onChange={(e) =>
-                                                    handleChangeCircuitName(
-                                                        circuit._id,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="text-lg font-medium text-gray-700 bg-transparent border-0 focus:outline-none"
-                                            />
-                                        </h4>
                                         <p className="text-sm text-gray-500">
                                             Created on{" "}
                                             {new Date(
@@ -173,7 +160,7 @@ const DeleteAccountPopup = ({ isOpen, setIsDeleteAccountPopupOpen }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-1 bg-black bg-opacity-50">
             <div className="w-96 bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-red-600">
                     Delete Account
@@ -233,7 +220,7 @@ const ChangePasswordPopup = ({ isOpen, setIsChangePasswordPopupOpen }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-1 bg-black bg-opacity-50">
             <div className="w-96 bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-red-600">
                     Change Password

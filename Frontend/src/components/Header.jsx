@@ -18,7 +18,7 @@ const Header = () => {
             </div>
 
             {/* Hamburger Menu for Small Screens */}
-            <div className="md:hidden">
+            <div className="md:hidden z-[1000]">
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="text-gray-300 focus:outline-none flex items-center"
@@ -60,7 +60,7 @@ const Header = () => {
 
             {/* Dropdown Menu */}
             {isMenuOpen && (
-                <div className="absolute top-16 left-0 w-full bg-gray-900 shadow-lg md:hidden">
+                <div className="absolute top-16 left-0 w-full bg-gray-900 shadow-lg md:hidden z-[100]">
                     <ul className="flex flex-col items-center gap-5 py-5 text-lg">
                         <li className="hover:text-gray-400 duration-100 cursor-pointer">
                             <Link

@@ -12,6 +12,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         const password = e.target.password.value;
 
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.signup, {
                 method: "POST",
                 credentials: "include",
@@ -62,6 +64,8 @@ export const AuthProvider = ({ children }) => {
             navigate("/login");
         } catch (error) {
             console.error("Error during signup:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
     const handleLogin = async (e) => {
@@ -72,6 +76,7 @@ export const AuthProvider = ({ children }) => {
         const password = e.target.password.value;
 
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.login, {
                 method: "POST",
                 credentials: "include",
@@ -102,11 +107,15 @@ export const AuthProvider = ({ children }) => {
             navigate("/");
         } catch (error) {
             console.error("Error during login:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
     const handleLogout = async () => {
         console.log("Logging Out...");
+
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.logout, {
                 method: "GET",
                 credentials: "include",
@@ -132,6 +141,8 @@ export const AuthProvider = ({ children }) => {
             navigate("/");
         } catch (error) {
             console.error("Error during logout:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -155,6 +166,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.getUser, {
                 method: "GET",
                 credentials: "include",
@@ -175,6 +187,8 @@ export const AuthProvider = ({ children }) => {
             console.error("Error fetching user data:", error.message);
 
             return null;
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -188,6 +202,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.saveCircuit, {
                 method: "POST",
                 credentials: "include",
@@ -207,6 +222,8 @@ export const AuthProvider = ({ children }) => {
             toast.success("Circuit saved successfully!");
         } catch (error) {
             console.error("Error saving circuit:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -214,6 +231,7 @@ export const AuthProvider = ({ children }) => {
     const handleGetCircuit = async (circuitId) => {
         console.log("Getting circuit...");
         try {
+            setIsLoading(true);
             const response = await fetch(
                 `${ENDPOINTS.getCircuit}?circuitId=${circuitId}`,
                 {
@@ -236,6 +254,8 @@ export const AuthProvider = ({ children }) => {
             return data.circuit;
         } catch (error) {
             console.error("Error in getting circuit:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -244,6 +264,7 @@ export const AuthProvider = ({ children }) => {
         console.log("Deleting circuit...");
 
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.deleteCircuit, {
                 method: "DELETE",
                 credentials: "include",
@@ -266,13 +287,17 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Error in deleting circuit:", error.message);
             return false;
+        } finally {
+            setIsLoading(false);
         }
     };
 
     // Function to delete user account
     const handleDeleteAccount = async (password) => {
         console.log("Deleting account...");
+
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.deleteAccount, {
                 method: "DELETE",
                 credentials: "include",
@@ -295,13 +320,17 @@ export const AuthProvider = ({ children }) => {
             await handleLogout();
         } catch (error) {
             console.error("Error in deleting account:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     // Function to change user password
     const handleChangePassword = async (currPassword, newPassword) => {
         console.log("Changing password...");
+
         try {
+            setIsLoading(true);
             const response = await fetch(ENDPOINTS.changePassword, {
                 method: "POST",
                 credentials: "include",
@@ -320,6 +349,8 @@ export const AuthProvider = ({ children }) => {
             toast.success(msg);
         } catch (error) {
             console.error("Error in changing password:", error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -356,6 +387,8 @@ export const AuthProvider = ({ children }) => {
 
     const values = useMemo(
         () => ({
+            isLoading,
+            setIsLoading,
             isLoggedIn,
             user,
             handleSignup,
@@ -369,6 +402,8 @@ export const AuthProvider = ({ children }) => {
             handleChangePassword,
         }),
         [
+            isLoading,
+            setIsLoading,
             isLoggedIn,
             user,
             handleSignup,

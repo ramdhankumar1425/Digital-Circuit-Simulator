@@ -14,6 +14,7 @@ import BooleanExpGenerator from "./pages/BooleanExpGenerator";
 import ContactUs from "./pages/ContactUs";
 import { Login, Signup } from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import Loading from "./components/Loading.jsx";
 
 function App() {
     return (
@@ -67,8 +68,12 @@ const Layout = ({ children }) => {
                     <Header />
                     <main>{children}</main>
                     <Footer />
+                    {/* For loading animations */}
+                    <Loading />
                 </CircuitProvider>
             </AuthProvider>
+
+            {/* Vercel Analytics */}
             <Analytics />
         </>
     );

@@ -18,8 +18,8 @@ const Palette = () => {
             bounds="parent"
             defaultPosition={{ x: 10, y: 70 }}
         >
-            <aside className="absolute w-40 h-fit py-2 text-center bg-gray-900 border-r border-gray-700 flex flex-col gap-1">
-                <h1 className="text-gray-200 text-xl font-semibold font-sans cursor-move drag-handle">
+            <aside className="absolute w-40 h-fit py-2 text-center bg-gray-900 border border-gray-800 flex flex-col gap-1">
+                <h1 className="text-gray-200 text-xl font-semibold font-sans cursor-grab drag-handle">
                     Components
                     <hr className="my-1" />
                 </h1>
@@ -36,7 +36,7 @@ const Palette = () => {
                 >
                     {/* Constant Input */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "ConstantInput")
                         }
@@ -58,7 +58,7 @@ const Palette = () => {
                 >
                     {/* LED */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "LED")}
                         draggable
                     >
@@ -66,7 +66,7 @@ const Palette = () => {
                     </div>
                     {/* Seven Segment Display */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "SevenSegmentDisplay")
                         }
@@ -88,7 +88,7 @@ const Palette = () => {
                 >
                     {/* NOT Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "NOTGate")}
                         draggable
                     >
@@ -96,7 +96,7 @@ const Palette = () => {
                     </div>
                     {/* OR Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "ORGate")}
                         draggable
                     >
@@ -104,7 +104,7 @@ const Palette = () => {
                     </div>
                     {/* AND Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "ANDGate")}
                         draggable
                     >
@@ -112,7 +112,7 @@ const Palette = () => {
                     </div>
                     {/* NAND Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "NANDGate")}
                         draggable
                     >
@@ -120,7 +120,7 @@ const Palette = () => {
                     </div>
                     {/* NOR Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "NORGate")}
                         draggable
                     >
@@ -128,7 +128,7 @@ const Palette = () => {
                     </div>
                     {/* XOR Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "XORGate")}
                         draggable
                     >
@@ -136,7 +136,7 @@ const Palette = () => {
                     </div>
                     {/* XNOR Gate */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "XNORGate")}
                         draggable
                     >
@@ -160,7 +160,7 @@ const Palette = () => {
                 >
                     {/* Half Adder */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "HalfAdder")}
                         draggable
                     >
@@ -168,7 +168,7 @@ const Palette = () => {
                     </div>
                     {/* Full Adder */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "FullAdder")}
                         draggable
                     >
@@ -176,7 +176,7 @@ const Palette = () => {
                     </div>
                     {/* FourBitFullAdder */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "FourBitFullAdder")
                         }
@@ -186,7 +186,7 @@ const Palette = () => {
                     </div>
                     {/* TwoToOneMUX */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "TwoToOneMUX")
                         }
@@ -196,7 +196,7 @@ const Palette = () => {
                     </div>
                     {/* FourToOneMUX */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "FourToOneMUX")
                         }
@@ -206,7 +206,7 @@ const Palette = () => {
                     </div>
                     {/* EightToOneMUX */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "EightToOneMUX")
                         }
@@ -216,7 +216,7 @@ const Palette = () => {
                     </div>
                     {/* BCDTo7SegmentDecoder */}
                     <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "BCDTo7SegmentDecoder")
                         }
@@ -238,18 +238,17 @@ const Palette = () => {
                         sequentialsOpen ? { height: "auto" } : { height: "0px" }
                     }
                 >
-                    <p className="text-gray-200">Coming soon...</p>
                     {/* Clock */}
-                    {/* <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                    <div
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "CLK")}
                         draggable
                     >
                         Clock
-                    </div> */}
+                    </div>
                     {/* D Flip Flop */}
                     {/* <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "DFlipFlop")}
                         draggable
                     >
@@ -257,7 +256,7 @@ const Palette = () => {
                     </div> */}
                     {/* T Flip Flop */}
                     {/* <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) => onDragStart(event, "TFlipFlop")}
                         draggable
                     >
@@ -265,7 +264,7 @@ const Palette = () => {
                     </div> */}
                     {/* JK Flip Flop */}
                     {/* <div
-                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300 hover:scale-105 duration-100"
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
                         onDragStart={(event) =>
                             onDragStart(event, "JKFlipFlop")
                         }
@@ -273,6 +272,7 @@ const Palette = () => {
                     >
                         JK flip flop
                     </div> */}
+                    <p className="text-gray-200">Coming soon...</p>
                 </div>
             </aside>
         </Draggable>

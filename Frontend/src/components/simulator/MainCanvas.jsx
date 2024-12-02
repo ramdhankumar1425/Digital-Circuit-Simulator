@@ -67,6 +67,7 @@ const edgeTypes = {
 function MainCanvas() {
     // Import circuit from CircuitContext
     const {
+        flowRef,
         nodes,
         edges,
         onNodesChange,
@@ -76,10 +77,12 @@ function MainCanvas() {
         onDragOver,
         onSelectionChange,
         onNodeDragStop,
+        theme,
+        gridVisible,
     } = useCircuit();
 
     return (
-        <div className="w-full grow bg-zinc-900">
+        <div ref={flowRef} className="w-full grow">
             <ReactFlow
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
@@ -95,10 +98,11 @@ function MainCanvas() {
                 onNodeDragStop={onNodeDragStop}
                 minZoom={0.1}
                 maxZoom={4}
-                fitView
+                colorMode={theme}
             >
                 <Controls />
                 <Background
+                    style={gridVisible ? {} : { display: "none" }}
                     id="1"
                     gap={25}
                     color="#384b49"

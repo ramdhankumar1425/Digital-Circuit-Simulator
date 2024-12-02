@@ -5,6 +5,7 @@ import {
     useEffect,
     useCallback,
     useMemo,
+    useRef,
 } from "react";
 import {
     applyNodeChanges,
@@ -13,11 +14,13 @@ import {
     Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { toPng } from "html-to-image";
+import { toast } from "react-toastify";
 
 // Context for circuit
 const CircuitContext = createContext();
 
-const nodeRegistry = {
+export const nodeRegistry = {
     // Inputs
     ConstantInput: {
         category: "input",
@@ -439,13 +442,16 @@ const nodeRegistry = {
 
 // Circuit Provider for "CircuitContext"
 export const CircuitProvider = ({ children }) => {
-    // Circuit state variables
+    const flowRef = useRef(null);
     const [nodes, setNodes] = useState([]);
     const [edges, setEdges] = useState([]);
     const [selectedNodes, setSelectedNodes] = useState([]);
     const [selectedEdges, setSelectedEdges] = useState([]);
     const [copiedNodes, setCopiedNodes] = useState([]);
     const [copiedEdges, setCopiedEdges] = useState([]);
+    const [theme, setTheme] = useState("dark");
+    const [gridVisible, setGridVisible] = useState(true);
+    const [snappingEnable, setSnappingEnable] = useState(true);
 
     // Handle positions for nodes based on rotation state
     const handlePositions = {
@@ -636,9 +642,6 @@ export const CircuitProvider = ({ children }) => {
 
         setNodes((nds) => nds.concat(newNodes));
         setEdges((eds) => eds.concat(newEdges));
-
-        setCopiedNodes([]);
-        setCopiedEdges([]);
     };
     // Function to handle node rotation
     const handleNodeRotation = () => {
@@ -660,7 +663,7 @@ export const CircuitProvider = ({ children }) => {
             )
         );
     };
-    // Keydown event to handle key presses
+    // Keydown event listener to handle key presses
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Delete") {
@@ -688,6 +691,8 @@ export const CircuitProvider = ({ children }) => {
     }, [onDelete, onCopy, onPaste]);
     // To snap nodes to background grid
     const onNodeDragStop = (event, node) => {
+        if (!snappingEnable) return;
+
         const gridSize = 25;
         const snappedX = Math.round(node.position.x / gridSize) * gridSize;
         const snappedY = Math.round(node.position.y / gridSize) * gridSize;
@@ -702,8 +707,8 @@ export const CircuitProvider = ({ children }) => {
     };
     // To retrieve circuit saved in local storage
     useEffect(() => {
-        // localStorage.removeItem("circuit");
-        const savedCircuit = localStorage.getItem("circuit");
+        // localStorage.removeItem("dcircuit");
+        const savedCircuit = localStorage.getItem("dcircuit");
 
         if (savedCircuit !== null) {
             const circuit = JSON.parse(savedCircuit);
@@ -733,13 +738,49 @@ export const CircuitProvider = ({ children }) => {
             edges,
         };
 
-        localStorage.setItem("circuit", JSON.stringify(circuit));
-        // localStorage.removeItem("circuit");
+        localStorage.setItem("dcircuit", JSON.stringify(circuit));
     }, [nodes, edges]);
+
+    // to clear circuit
+    const clearCircuit = () => {
+        localStorage.removeItem("dcircuit");
+        setNodes([]);
+        setEdges([]);
+        setSelectedNodes([]);
+        setSelectedEdges([]);
+        setCopiedNodes([]);
+        setCopiedEdges([]);
+    };
+
+    // to export circuit to png
+    const handleExport = () => {
+        console.log("Exporting as PNG");
+
+        if (!flowRef.current) {
+            console.error("React Flow container reference is not available.");
+            toast.error("Error occured!");
+            return;
+        }
+
+        const fileName = "flow-diagram.png";
+
+        toPng(flowRef.current, { cacheBust: true, pixelRatio: 5 })
+            .then((dataUrl) => {
+                const link = document.createElement("a");
+                link.download = fileName;
+                link.href = dataUrl;
+                link.click();
+            })
+            .catch((error) => {
+                console.error("Failed to export React Flow as PNG:", error);
+                toast.error("Failed to export flow");
+            });
+    };
 
     // Values to export
     const value = useMemo(
         () => ({
+            flowRef,
             nodes,
             edges,
             onNodesChange,
@@ -754,8 +795,17 @@ export const CircuitProvider = ({ children }) => {
             setNodes,
             setEdges,
             handlePositions,
+            clearCircuit,
+            theme,
+            setTheme,
+            handleExport,
+            gridVisible,
+            setGridVisible,
+            snappingEnable,
+            setSnappingEnable,
         }),
         [
+            flowRef,
             nodes,
             edges,
             selectedNodes,
@@ -767,6 +817,14 @@ export const CircuitProvider = ({ children }) => {
             onSelectionChange,
             onNodeDragStop,
             handlePositions,
+            clearCircuit,
+            theme,
+            setTheme,
+            handleExport,
+            gridVisible,
+            setGridVisible,
+            snappingEnable,
+            setSnappingEnable,
         ]
     );
 

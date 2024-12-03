@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
 const ConstantInputNode = (props) => {
-    const { setNodes, handlePositions } = useCircuit();
+    const [showToolbar, setShowToolbar] = useState(false);
+    const [name, setName] = useState("");
+    const { setNodes, handlePositions, theme } = useCircuit();
 
     const handleToggleOutput = () => {
         setNodes((prevNodes) =>
@@ -24,8 +26,29 @@ const ConstantInputNode = (props) => {
         );
     };
 
+    // to set name
+    useEffect(() => {
+        setNodes((prevNodes) =>
+            prevNodes.map((prevNode) =>
+                prevNode.id == props.id
+                    ? {
+                          ...prevNode,
+                          data: {
+                              ...prevNode.data,
+                              name,
+                          },
+                      }
+                    : prevNode
+            )
+        );
+    }, [name]);
+
     return (
-        <div className="relative" onClick={handleToggleOutput}>
+        <div
+            className="relative"
+            onClick={handleToggleOutput}
+            onDoubleClick={() => setShowToolbar((prev) => !prev)}
+        >
             {/* SVG */}
             <svg
                 width="50"
@@ -57,6 +80,28 @@ const ConstantInputNode = (props) => {
             <p className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 font-semibold text-2xl">
                 {props.data.outputs.out ? 1 : 0}
             </p>
+
+            {/* Name */}
+            <p
+                className={`absolute left-1/2 -translate-x-1/2 font-semibold text-2xl ${
+                    theme == "dark" ? "text-gray-200" : "text-gray-800"
+                }`}
+            >
+                {props.data?.name}
+            </p>
+
+            {/* Toolbar to change name */}
+            {showToolbar && (
+                <div className="absolute top-14 left-1/2 -translate-x-1/2 bg-white p-2 w-fit shadow-lg rounded">
+                    <label className="text-sm font-semibold">Name:</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="block w-24 p-1 mt-1 border rounded"
+                    />
+                </div>
+            )}
         </div>
     );
 };

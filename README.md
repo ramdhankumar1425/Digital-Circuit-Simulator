@@ -63,8 +63,8 @@ Digital-Verse offers a wide range of components to design combinational circuits
     Simply drag components from the palette and drop them onto the canvas to add them to your circuit. You can easily position and organize them as needed.
 -   **Making Connections:**  
     To connect components, click and drag from the node handles (small circles on the sides of nodes) to another node handle. This creates an edge connecting the two nodes, allowing signals to flow between them.
--   **Input Node Value:**  
-    Click on an **Input** node to change its value. You can toggle between `0` and `1` to simulate different input conditions.
+-   **Input Node Value and Name:**  
+    Click on an **Input** node to change its value. You can toggle between `0` and `1`. Double click to add/change name.
 -   **Clock Node Frequency:**  
     Double-click on a **Clock** node to change its frequency. This allows you to control the timing of sequential circuits, such as flip-flops and other clock-driven components.
 

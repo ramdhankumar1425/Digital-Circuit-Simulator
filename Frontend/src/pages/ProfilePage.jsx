@@ -62,9 +62,12 @@ function ProfilePage() {
                             {userData.circuits.map((circuit) => (
                                 <li
                                     key={circuit._id}
-                                    className="flex flex-wrap justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
+                                    className="flex flex-wrap gap-2 justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
                                 >
                                     <div className="flex-grow">
+                                        <p className="font-semibold text-lg text-gray-900">
+                                            {circuit.name}
+                                        </p>
                                         <p className="text-sm text-gray-500">
                                             Created on{" "}
                                             {new Date(

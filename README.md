@@ -50,12 +50,12 @@ Digital-Verse offers a wide range of components to design combinational circuits
 -   `Delete`: Delete selected nodes and edges.
 -   `Ctrl + C`: Copy selected nodes and edges.
 -   `Ctrl + V`: Paste copied nodes and edges.
--   `Ctrl + R`: Clear the circuit.
--   `Ctrl + K`: Enable/Disable background grid.
--   `Ctrl + J`: Enable/Disable snapping to grid.
--   `Ctrl + M`: Mode selection (light/dark).
--   `Ctrl + E`: Export circuit.
--   `Ctrl + S`: Save circuit.
+-   `Ctrl + Alt + R`: Clear the circuit.
+-   `Ctrl + Alt + K`: Enable/Disable background grid.
+-   `Ctrl + Alt + J`: Enable/Disable snapping to grid.
+-   `Ctrl + Alt + L`: Mode selection (light/dark).
+-   `Ctrl + Shift + E`: Export circuit.
+-   `Ctrl + Shift + S`: Save circuit.
 
 ### 7. Interaction Guide
 

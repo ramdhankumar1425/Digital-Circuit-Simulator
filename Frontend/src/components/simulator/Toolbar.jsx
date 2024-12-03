@@ -30,22 +30,22 @@ function Toolbar() {
     // For keyboard shortcuts of all toolbar actions
     useEffect(() => {
         const handleKeyPress = (e) => {
-            e.preventDefault();
-
             const key = e.key.toLowerCase();
             const ctrlKey = e.ctrlKey;
+            const altKey = e.altKey;
+            const shiftKey = e.shiftKey;
 
-            if (ctrlKey && key == "r") {
+            if (ctrlKey && altKey && key == "r") {
                 clearCircuit();
-            } else if (ctrlKey && key == "j") {
+            } else if (ctrlKey && altKey && key == "j") {
                 setSnappingEnable((prev) => !prev);
-            } else if (ctrlKey && key == "k") {
+            } else if (ctrlKey && altKey && key == "k") {
                 setGridVisible((prev) => !prev);
-            } else if (ctrlKey && key == "m") {
+            } else if (ctrlKey && altKey && key == "l") {
                 setTheme((prev) => (prev == "light" ? "dark" : "light"));
-            } else if (ctrlKey && key == "e") {
+            } else if (ctrlKey && shiftKey && key == "e") {
                 handleExport();
-            } else if (ctrlKey && key == "s") {
+            } else if (ctrlKey && shiftKey && key == "s") {
                 setIsSaveCircuitPopupOpen(true);
             }
         };
@@ -72,7 +72,7 @@ function Toolbar() {
                     {/* Clear Canvas */}
                     <MdCleaningServices
                         onClick={clearCircuit}
-                        title="Clear circuit (Ctrl+R)"
+                        title="Clear circuit (Ctrl+Alt+R)"
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />
 
@@ -80,13 +80,13 @@ function Toolbar() {
                     {snappingEnable ? (
                         <TbMagnetOff
                             onClick={() => setSnappingEnable(false)}
-                            title="Disable snapping  (Ctrl+J)"
+                            title="Disable snapping  (Ctrl+Alt+J)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <TbMagnet
                             onClick={() => setSnappingEnable(true)}
-                            title="Enable snapping  (Ctrl+J)"
+                            title="Enable snapping  (Ctrl+Alt+J)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     )}
@@ -95,13 +95,13 @@ function Toolbar() {
                     {gridVisible ? (
                         <MdOutlineGridOff
                             onClick={() => setGridVisible(false)}
-                            title="Disable grid  (Ctrl+K)"
+                            title="Disable grid  (Ctrl+Alt+K)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <MdOutlineGridOn
                             onClick={() => setGridVisible(true)}
-                            title="Enable grid  (Ctrl+K)"
+                            title="Enable grid  (Ctrl+Alt+K)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     )}
@@ -109,13 +109,13 @@ function Toolbar() {
                     {/* Theme */}
                     {theme == "dark" ? (
                         <CiLight
-                            title="Light theme  (Ctrl+M)"
+                            title="Light theme  (Ctrl+Alt+L)"
                             onClick={() => setTheme("light")}
                             className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <CiDark
-                            title="Dark theme  (Ctrl+M)"
+                            title="Dark theme  (Ctrl+Alt+L)"
                             onClick={() => setTheme("dark")}
                             className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                         />
@@ -124,13 +124,13 @@ function Toolbar() {
                     {/* Export */}
                     <CiExport
                         onClick={handleExport}
-                        title="Export to PNG  (Ctrl+E)"
+                        title="Export to PNG  (Ctrl+Shift+E)"
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />
 
                     {/* Save */}
                     <IoSaveOutline
-                        title="Save circuit  (Ctrl+S)"
+                        title="Save circuit  (Ctrl+Shift+S)"
                         onClick={() => setIsSaveCircuitPopupOpen(true)}
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />

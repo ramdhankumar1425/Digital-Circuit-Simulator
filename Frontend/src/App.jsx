@@ -14,6 +14,7 @@ import BooleanExpGenerator from "./pages/BooleanExpGenerator";
 import ContactUs from "./pages/ContactUs";
 import { Login, Signup } from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import Loading from "./components/Loading.jsx";
 
 function App() {
@@ -23,23 +24,24 @@ function App() {
                 <Routes>
                     <Route path="/">
                         <Route index element={<HomePage />} />
-                        <Route path="/simulator" element={<Simulator />} />
+                        <Route path="simulator" element={<Simulator />} />
                         <Route
-                            path="/simulator/:circuitId"
+                            path="simulator/:circuitId"
                             element={<Simulator />}
                         />
                         <Route
-                            path="/truth-table-generator"
+                            path="truth-table-generator"
                             element={<TTGenerator />}
                         />
                         <Route
-                            path="/boolean-expression-generator"
+                            path="boolean-expression-generator"
                             element={<BooleanExpGenerator />}
                         />
-                        <Route path="/contact" element={<ContactUs />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="contact" element={<ContactUs />} />
+                        <Route path="signup" element={<Signup />} />
+                        <Route path="login" element={<Login />} />
+                        <Route path="profile" element={<ProfilePage />} />
+                        <Route path="*" element={<NotFound />} />
                     </Route>
                 </Routes>
             </Layout>

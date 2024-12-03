@@ -86,6 +86,31 @@ const SevenSegmentDisplayNode = (props) => {
                     stroke="none"
                     strokeWidth="2"
                 />
+                {/* Input pin labels */}{" "}
+                <text x="10" y="8" fontSize="5px">
+                    g
+                </text>
+                <text x="28" y="8" fontSize="5px">
+                    f
+                </text>
+                <text x="43" y="8" fontSize="5px">
+                    a
+                </text>
+                <text x="59" y="8" fontSize="5px">
+                    b
+                </text>
+                <text x="10" y="95" fontSize="5px">
+                    e
+                </text>
+                <text x="27" y="95" fontSize="5px">
+                    d
+                </text>
+                <text x="43" y="95" fontSize="5px">
+                    c
+                </text>
+                <text x="58" y="95" fontSize="5px">
+                    dp
+                </text>
             </svg>
 
             {/* Input handle */}

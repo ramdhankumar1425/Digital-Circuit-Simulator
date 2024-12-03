@@ -13,43 +13,46 @@ function TruthTableGenerator() {
     const generateTruthTable = () => {
         // Safety checks
         if (!booleanExpression.length > 0) {
-            toast("Provide boolean expression");
+            toast.info("Provide boolean expression");
             return;
         }
 
         const table = [];
 
-        // get input varibles
-        const variableRegex = /[A-Za-z]/g;
-        let inputVariables = [
-            ...new Set(booleanExpression.match(variableRegex)),
-        ];
-
-        // count total no. of rows in truth table
-        const totalRows = Math.pow(2, inputVariables.length);
-
-        // fill the truth table for input variables
-        for (let i = 0; i < totalRows; i++) {
-            const rowNumBinaryEq = i
-                .toString(2)
-                .padStart(inputVariables.length, "0");
-
-            let row = {};
-
-            inputVariables.map((variable, idx) => {
-                row[variable] = rowNumBinaryEq[idx];
-            });
-
-            table.push(row);
-        }
-
         try {
+            // get input varibles
+            const variableRegex = /[A-Za-z]/g;
+            let inputVariables = [
+                ...new Set(booleanExpression.match(variableRegex)),
+            ];
+
+            // count total no. of rows in truth table
+            const totalRows = Math.pow(2, inputVariables.length);
+
+            // fill the truth table for input variables
+            for (let i = 0; i < totalRows; i++) {
+                const rowNumBinaryEq = i
+                    .toString(2)
+                    .padStart(inputVariables.length, "0");
+
+                let row = {};
+
+                inputVariables.map((variable, idx) => {
+                    row[variable] = rowNumBinaryEq[idx];
+                });
+
+                table.push(row);
+            }
+
             // fill the truth table for output variable
             for (let i = 0; i < totalRows; i++) {
                 const row = table[i];
                 const keys = Object.keys(row);
 
-                let evalExpression = booleanExpression;
+                let evalExpression = booleanExpression
+                    .replaceAll("+", "||")
+                    .replaceAll("*", "&&")
+                    .replaceAll("~", "!");
 
                 keys.forEach((key) => {
                     const val = row[key];
@@ -60,10 +63,11 @@ function TruthTableGenerator() {
                 row["Out"] = out;
             }
         } catch (error) {
-            toast("Invalid Expression!");
+            toast.error("Invalid Expression!");
+            return;
         }
 
-        console.log(table);
+        // console.log(table);
         setTruthTable(table);
     };
 
@@ -95,7 +99,10 @@ function TruthTableGenerator() {
                 </ul>
                 <p className="mt-2">
                     <strong>Note:</strong> Always use parentheses to enhance
-                    clarity and prevent errors.
+                    clarity and prevent errors. You can also use <code>*</code>{" "}
+                    for <strong>AND</strong>, <code>+</code> for{" "}
+                    <strong>OR</strong>, and <code>~</code> for{" "}
+                    <strong>NOT</strong>
                 </p>
             </div>
 

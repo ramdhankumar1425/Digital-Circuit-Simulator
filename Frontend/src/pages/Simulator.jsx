@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { nodeRegistry, useCircuit } from "../context/CircuitContext";
 import { useAuth } from "../context/AuthContext";
 // Import components
@@ -8,7 +8,8 @@ import Palette from "../components/simulator/Palette";
 import Toolbar from "../components/simulator/Toolbar";
 
 function Simulator() {
-    const { handleGetCircuit } = useAuth();
+    const navigate = useNavigate();
+    const { isLoggedIn, handleGetCircuit } = useAuth();
     const { setNodes, setEdges, clearCircuit } = useCircuit();
     const { circuitId } = useParams();
 
@@ -22,6 +23,7 @@ function Simulator() {
                 });
             }, 1000);
         }
+
         async function setCircuit() {
             let circuit = await handleGetCircuit(circuitId);
             circuit = JSON.parse(circuit.data);
@@ -42,10 +44,24 @@ function Simulator() {
             setEdges(edges);
         }
 
-        // scrollToMain();
-        if (circuitId) setCircuit();
+        // to prevent page refresh
+        function handleUnload(e) {
+            e.preventDefault();
+            e.returnValue = "";
+        }
 
-        return () => clearCircuit();
+        window.addEventListener("beforeunload", handleUnload);
+
+        // scrollToMain();
+        if (circuitId) {
+            if (isLoggedIn) setCircuit();
+            else navigate("/simulator");
+        }
+
+        return () => {
+            window.removeEventListener("beforeunload", handleUnload);
+            // clearCircuit();
+        };
     }, []);
 
     return (

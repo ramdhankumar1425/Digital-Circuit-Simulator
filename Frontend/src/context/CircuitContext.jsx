@@ -29,6 +29,12 @@ export const nodeRegistry = {
         logic: (inputs) => ({ out: inputs.in1 }),
     },
     // Outputs
+    Output: {
+        category: "output",
+        inputs: [{ name: "in1" }],
+        outputs: [{ name: "out" }],
+        logic: (inputs) => ({ out: inputs.in1 }),
+    },
     LED: {
         category: "output",
         inputs: [{ name: "in1" }],
@@ -452,6 +458,10 @@ export const CircuitProvider = ({ children }) => {
     const [theme, setTheme] = useState("dark");
     const [gridVisible, setGridVisible] = useState(true);
     const [snappingEnable, setSnappingEnable] = useState(true);
+    const freqBounds = {
+        min: 0,
+        max: 1000,
+    };
 
     // Handle positions for nodes based on rotation state
     const handlePositions = {
@@ -489,11 +499,13 @@ export const CircuitProvider = ({ children }) => {
         (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
         []
     );
+
     // For any change in edges
     const onEdgesChange = useCallback(
         (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
         []
     );
+
     // For new edge creation
     const onConnect = useCallback(
         (params) =>
@@ -510,6 +522,7 @@ export const CircuitProvider = ({ children }) => {
             ),
         [nodes]
     );
+
     // For new node creation
     const onDrop = useCallback(
         (event) => {
@@ -569,11 +582,13 @@ export const CircuitProvider = ({ children }) => {
         },
         [setNodes]
     );
+
     // To handle dropping of nodes from palette
     const onDragOver = useCallback((event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
     }, []);
+
     // Function to handle node and edge selection
     const onSelectionChange = useCallback((params) => {
         const selected_nodes = params.nodes.map((node) => node.id);
@@ -582,6 +597,7 @@ export const CircuitProvider = ({ children }) => {
         setSelectedNodes(selected_nodes);
         setSelectedEdges(selected_edges);
     }, []);
+
     // Function to delete selected nodes and edges
     const onDelete = useCallback(() => {
         const newNodes = nodes.filter(
@@ -593,11 +609,13 @@ export const CircuitProvider = ({ children }) => {
         setNodes(newNodes);
         setEdges(newEdges);
     }, [nodes, edges, selectedNodes, selectedEdges]);
+
     // Function to copy selected nodes and edges
     const onCopy = () => {
         setCopiedNodes(selectedNodes);
         setCopiedEdges(selectedEdges);
     };
+
     // Function to paste copied nodes and edges
     const onPaste = () => {
         const oldNodes = copiedNodes.map((copiedNodeId) =>
@@ -643,6 +661,7 @@ export const CircuitProvider = ({ children }) => {
         setNodes((nds) => nds.concat(newNodes));
         setEdges((eds) => eds.concat(newEdges));
     };
+
     // Function to handle node rotation
     const handleNodeRotation = () => {
         setNodes((nds) =>
@@ -663,32 +682,7 @@ export const CircuitProvider = ({ children }) => {
             )
         );
     };
-    // Keydown event listener to handle key presses
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === "Delete") {
-                onDelete();
-            } else if (
-                event.ctrlKey &&
-                (event.key === "C" || event.key === "c")
-            ) {
-                onCopy();
-            } else if (
-                event.ctrlKey &&
-                (event.key === "V" || event.key === "v")
-            ) {
-                onPaste();
-            } else if (event.key === "R" || event.key === "r") {
-                handleNodeRotation();
-            }
-        };
 
-        window.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [onDelete, onCopy, onPaste]);
     // To snap nodes to background grid
     const onNodeDragStop = (event, node) => {
         if (!snappingEnable) return;
@@ -705,41 +699,6 @@ export const CircuitProvider = ({ children }) => {
             )
         );
     };
-    // To retrieve circuit saved in local storage
-    useEffect(() => {
-        // localStorage.removeItem("dcircuit");
-        const savedCircuit = localStorage.getItem("dcircuit");
-
-        if (savedCircuit !== null) {
-            const circuit = JSON.parse(savedCircuit);
-            // logic funtion needs to redefined as localstorage can't store functions
-            const nds = circuit.nodes.map((node) => {
-                const config = nodeRegistry[node.type];
-                if (!config) return;
-
-                return {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        logic: config.logic,
-                    },
-                };
-            });
-
-            setNodes(nds);
-            setEdges(circuit.edges);
-        }
-    }, []);
-    // To store circuit in local storage
-    useEffect(() => {
-        // Save nodes and edges
-        const circuit = {
-            nodes,
-            edges,
-        };
-
-        localStorage.setItem("dcircuit", JSON.stringify(circuit));
-    }, [nodes, edges]);
 
     // to clear circuit
     const clearCircuit = () => {
@@ -777,6 +736,70 @@ export const CircuitProvider = ({ children }) => {
             });
     };
 
+    // Keydown event listener to handle key presses
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === "Delete") {
+                onDelete();
+            } else if (
+                event.ctrlKey &&
+                (event.key === "C" || event.key === "c")
+            ) {
+                onCopy();
+            } else if (
+                event.ctrlKey &&
+                (event.key === "V" || event.key === "v")
+            ) {
+                onPaste();
+            } else if (event.key === "R" || event.key === "r") {
+                handleNodeRotation();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [onDelete, onCopy, onPaste]);
+
+    // To retrieve circuit saved in local storage
+    useEffect(() => {
+        // localStorage.removeItem("dcircuit");
+        const savedCircuit = localStorage.getItem("dcircuit");
+
+        if (savedCircuit !== null) {
+            const circuit = JSON.parse(savedCircuit);
+            // logic funtion needs to redefined as localstorage can't store functions
+            const nds = circuit.nodes.map((node) => {
+                const config = nodeRegistry[node.type];
+                if (!config) return;
+
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        logic: config.logic,
+                    },
+                };
+            });
+
+            setNodes(nds);
+            setEdges(circuit.edges);
+        }
+    }, []);
+
+    // To store circuit in local storage
+    useEffect(() => {
+        // Save nodes and edges
+        const circuit = {
+            nodes,
+            edges,
+        };
+
+        localStorage.setItem("dcircuit", JSON.stringify(circuit));
+    }, [nodes, edges]);
+
     // Values to export
     const value = useMemo(
         () => ({
@@ -803,6 +826,7 @@ export const CircuitProvider = ({ children }) => {
             setGridVisible,
             snappingEnable,
             setSnappingEnable,
+            freqBounds,
         }),
         [
             flowRef,

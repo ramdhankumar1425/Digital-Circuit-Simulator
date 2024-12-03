@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import { useCircuit } from "../../context/CircuitContext";
 import SaveCircuitPopup from "./SaveCircuitPopup";
 // import icons used
-import { IoMoveSharp } from "react-icons/io5";
-import { RxReset } from "react-icons/rx";
-import { TbMagnet } from "react-icons/tb";
-import { TbMagnetOff } from "react-icons/tb";
-import { MdOutlineGridOff } from "react-icons/md";
-import { MdOutlineGridOn } from "react-icons/md";
-import { CiDark } from "react-icons/ci";
-import { CiLight } from "react-icons/ci";
-import { CiExport } from "react-icons/ci";
-import { IoSaveOutline } from "react-icons/io5";
+import { IoMoveSharp, IoSaveOutline } from "react-icons/io5";
+import { TbMagnet, TbMagnetOff } from "react-icons/tb";
+import {
+    MdCleaningServices,
+    MdOutlineGridOn,
+    MdOutlineGridOff,
+    MdRedo,
+    MdUndo,
+} from "react-icons/md";
+import { CiDark, CiLight, CiExport } from "react-icons/ci";
 
 function Toolbar() {
     const {
@@ -26,6 +26,34 @@ function Toolbar() {
         setSnappingEnable,
     } = useCircuit();
     const [isSaveCircuitPopupOpen, setIsSaveCircuitPopupOpen] = useState(false);
+
+    // For keyboard shortcuts of all toolbar actions
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            e.preventDefault();
+
+            const key = e.key.toLowerCase();
+            const ctrlKey = e.ctrlKey;
+
+            if (ctrlKey && key == "r") {
+                clearCircuit();
+            } else if (ctrlKey && key == "j") {
+                setSnappingEnable((prev) => !prev);
+            } else if (ctrlKey && key == "k") {
+                setGridVisible((prev) => !prev);
+            } else if (ctrlKey && key == "m") {
+                setTheme((prev) => (prev == "light" ? "dark" : "light"));
+            } else if (ctrlKey && key == "e") {
+                handleExport();
+            } else if (ctrlKey && key == "s") {
+                setIsSaveCircuitPopupOpen(true);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    }, []);
 
     return (
         <>
@@ -42,9 +70,9 @@ function Toolbar() {
                     <IoMoveSharp className="drag-handle text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-grab" />
 
                     {/* Clear Canvas */}
-                    <RxReset
+                    <MdCleaningServices
                         onClick={clearCircuit}
-                        title="Clear circuit"
+                        title="Clear circuit (Ctrl+R)"
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />
 
@@ -52,13 +80,13 @@ function Toolbar() {
                     {snappingEnable ? (
                         <TbMagnetOff
                             onClick={() => setSnappingEnable(false)}
-                            title="Disable snapping"
+                            title="Disable snapping  (Ctrl+J)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <TbMagnet
                             onClick={() => setSnappingEnable(true)}
-                            title="Enable snapping"
+                            title="Enable snapping  (Ctrl+J)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     )}
@@ -67,13 +95,13 @@ function Toolbar() {
                     {gridVisible ? (
                         <MdOutlineGridOff
                             onClick={() => setGridVisible(false)}
-                            title="Disable grid"
+                            title="Disable grid  (Ctrl+K)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <MdOutlineGridOn
                             onClick={() => setGridVisible(true)}
-                            title="Enable grid"
+                            title="Enable grid  (Ctrl+K)"
                             className="text-gray-300 hover:text-gray-400 font-light transition text-3xl py-1 cursor-pointer"
                         />
                     )}
@@ -81,13 +109,13 @@ function Toolbar() {
                     {/* Theme */}
                     {theme == "dark" ? (
                         <CiLight
-                            title="Light theme"
+                            title="Light theme  (Ctrl+M)"
                             onClick={() => setTheme("light")}
                             className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                         />
                     ) : (
                         <CiDark
-                            title="Dark theme"
+                            title="Dark theme  (Ctrl+M)"
                             onClick={() => setTheme("dark")}
                             className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                         />
@@ -96,13 +124,13 @@ function Toolbar() {
                     {/* Export */}
                     <CiExport
                         onClick={handleExport}
-                        title="Export to PNG"
+                        title="Export to PNG  (Ctrl+E)"
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />
 
                     {/* Save */}
                     <IoSaveOutline
-                        title="Save circuit"
+                        title="Save circuit  (Ctrl+S)"
                         onClick={() => setIsSaveCircuitPopupOpen(true)}
                         className="text-gray-300 hover:text-gray-400 transition text-3xl py-1 cursor-pointer"
                     />

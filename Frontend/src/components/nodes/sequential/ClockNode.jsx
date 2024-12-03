@@ -3,9 +3,9 @@ import { Handle, Position } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
 const ClockNode = (props) => {
-    const { setNodes } = useCircuit();
-    const [freq, setFreq] = useState(1);
+    const { setNodes, freqBounds } = useCircuit();
     const [showToolbar, setShowToolbar] = useState(false);
+    const [freq, setFreq] = useState(1);
 
     // Function to toogle b/w 0-1
     const handleToggleOutput = () => {
@@ -27,9 +27,10 @@ const ClockNode = (props) => {
             )
         );
     };
+
     useEffect(() => {
         const interval = setInterval(() => {
-            handleToggleOutput();
+            if (+freq != 0) handleToggleOutput();
         }, 1000 / freq);
 
         return () => clearInterval(interval);
@@ -72,13 +73,17 @@ const ClockNode = (props) => {
                     <input
                         type="text"
                         value={freq}
-                        onChange={(e) =>
-                            setFreq(
-                                +e.target.value > 0 ? +e.target.value : freq
-                            )
-                        }
-                        max={1000}
-                        min={0.1}
+                        onChange={(e) => {
+                            const inputValue = e.target.value;
+
+                            if (
+                                /^\d*\.?\d*$/.test(inputValue) &&
+                                inputValue >= freqBounds.min &&
+                                inputValue <= freqBounds.max
+                            ) {
+                                setFreq(inputValue);
+                            }
+                        }}
                         className="block w-24 p-1 mt-1 border rounded"
                     />
                 </div>

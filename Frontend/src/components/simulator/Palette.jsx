@@ -56,6 +56,14 @@ const Palette = () => {
                     className="w-full flex flex-col gap-2 px-1 overflow-hidden duration-150"
                     style={outputsOpen ? { height: "auto" } : { height: "0px" }}
                 >
+                    {/* Output */}
+                    <div
+                        className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"
+                        onDragStart={(event) => onDragStart(event, "Output")}
+                        draggable
+                    >
+                        Output
+                    </div>
                     {/* LED */}
                     <div
                         className="p-2 text-center bg-gray-200 border rounded-md cursor-pointer shadow hover:bg-gray-300  duration-100"

@@ -14,7 +14,7 @@ const handleSignUp = async (req, res) => {
 
     try {
         // Check for an already existing user with the same email
-        const existingUser = await User.findOne({ email });
+        let existingUser = await User.findOne({ email });
 
         if (existingUser) {
             console.log("Email already registered");

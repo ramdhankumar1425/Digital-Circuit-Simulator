@@ -4,6 +4,7 @@ import React, {
     useContext,
     useEffect,
     useMemo,
+    useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -32,86 +33,96 @@ export const AuthProvider = ({ children }) => {
     };
 
     // auth methods
-    const handleSignup = async (e) => {
-        console.log("Signing Up...");
-        e.preventDefault();
+    const handleSignup = useCallback(
+        async (e) => {
+            console.log("Signing Up...");
+            e.preventDefault();
 
-        const username = e.target.username.value;
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+            const username = e.target.username.value;
+            const email = e.target.email.value;
+            const password = e.target.password.value;
 
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.signup, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, email, password }),
-            });
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.signup, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                });
 
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-                throw new Error("Signup failed. Please try again.");
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+                    throw new Error("Signup failed. Please try again.");
+                }
+
+                const data = await response.json();
+
+                console.log("Signup successful:", data.msg);
+
+                navigate("/login");
+            } catch (error) {
+                console.error("Error during signup:", error.message);
+            } finally {
+                setIsLoading(false);
             }
+        },
+        [isLoading]
+    );
 
-            const data = await response.json();
+    const handleLogin = useCallback(
+        async (e) => {
+            console.log("Logging In...");
+            e.preventDefault();
 
-            console.log("Signup successful:", data.msg);
+            const email = e.target.email.value;
+            const password = e.target.password.value;
 
-            navigate("/login");
-        } catch (error) {
-            console.error("Error during signup:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleLogin = async (e) => {
-        console.log("Logging In...");
-        e.preventDefault();
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.login, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
 
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+                    throw new Error(
+                        "Login failed. Please check your credentials."
+                    );
+                }
 
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.login, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
+                const data = await response.json();
 
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-                throw new Error("Login failed. Please check your credentials.");
+                console.log("Login successful:", data.msg);
+                // save the user info in local storage
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify({ email, username: data.username })
+                );
+                setUser({ email, username: data.username });
+
+                setIsLoggedIn(true);
+
+                navigate("/");
+            } catch (error) {
+                console.error("Error during login:", error.message);
+            } finally {
+                setIsLoading(false);
             }
+        },
+        [setIsLoading, setIsLoggedIn, setUser]
+    );
 
-            const data = await response.json();
-
-            console.log("Login successful:", data.msg);
-            // save the user info in local storage
-            localStorage.setItem(
-                "user",
-                JSON.stringify({ email, username: data.username })
-            );
-            setUser({ email, username: data.username });
-
-            setIsLoggedIn(true);
-
-            navigate("/");
-        } catch (error) {
-            console.error("Error during login:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    const handleLogout = async () => {
+    const handleLogout = useCallback(async () => {
         console.log("Logging Out...");
 
         try {
@@ -144,7 +155,7 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [setIsLoading, setIsLoggedIn, setUser]);
 
     // check for logged in user
     useEffect(() => {
@@ -158,7 +169,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // Function to fetch user data from the backend
-    const handleGetUserData = async () => {
+    const handleGetUserData = useCallback(async () => {
         console.log("Getting user data...");
         if (!isLoggedIn) {
             navigate("/login");
@@ -190,169 +201,209 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [setIsLoading, isLoggedIn]);
 
     // Function to save circuit to backend
-    const handleSaveCircuit = async (circuit) => {
-        console.log("Saving circuit...");
-        // if user not logged in
-        if (!isLoggedIn) {
-            toast.info("Login first to save circuit");
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.saveCircuit, {
-                method: "POST",
-                credentials: "include",
-                body: JSON.stringify({ circuit }),
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-
-                throw new Error("Save failed. Please try again.");
+    const handleSaveCircuit = useCallback(
+        async (circuit) => {
+            console.log("Saving circuit...");
+            // if user not logged in
+            if (!isLoggedIn) {
+                toast.info("Login first to save circuit");
+                return;
             }
 
-            const data = await response.json();
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.saveCircuit, {
+                    method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({ circuit }),
+                    headers: { "Content-Type": "application/json" },
+                });
 
-            toast.success("Circuit saved successfully!");
-        } catch (error) {
-            console.error("Error saving circuit:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+
+                    throw new Error("Save failed. Please try again.");
+                }
+
+                const data = await response.json();
+
+                toast.success("Circuit saved successfully!");
+            } catch (error) {
+                console.error("Error saving circuit:", error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [setIsLoading, isLoggedIn]
+    );
 
     // Function to get circuit from backend
-    const handleGetCircuit = async (circuitId) => {
-        console.log("Getting circuit...");
-        try {
-            setIsLoading(true);
-            const response = await fetch(
-                `${ENDPOINTS.getCircuit}?circuitId=${circuitId}`,
-                {
-                    method: "GET",
-                    credentials: "include",
+    const handleGetCircuit = useCallback(
+        async (circuitId) => {
+            console.log("Getting circuit...");
 
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-
-                throw new Error("Get failed. Please try again.");
+            // if user not logged in
+            if (!isLoggedIn) {
+                return;
             }
 
-            const data = await response.json();
+            try {
+                setIsLoading(true);
+                const response = await fetch(
+                    `${ENDPOINTS.getCircuit}?circuitId=${circuitId}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
 
-            return data.circuit;
-        } catch (error) {
-            console.error("Error in getting circuit:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+
+                    throw new Error("Get failed. Please try again.");
+                }
+
+                const data = await response.json();
+
+                return data.circuit;
+            } catch (error) {
+                console.error("Error in getting circuit:", error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [setIsLoading, isLoggedIn]
+    );
 
     // Function to delete circuit
-    const handleDeleteCircuit = async (circuitId) => {
-        console.log("Deleting circuit...");
+    const handleDeleteCircuit = useCallback(
+        async (circuitId) => {
+            console.log("Deleting circuit...");
 
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.deleteCircuit, {
-                method: "DELETE",
-                credentials: "include",
-                body: JSON.stringify({ circuitId }),
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-
-                throw new Error("Deletion failed. Please try again.");
+            // if user not logged in
+            if (!isLoggedIn) {
+                return;
             }
 
-            // successfully deleted
-            const { msg } = await response.json();
-            // toast(msg);
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.deleteCircuit, {
+                    method: "DELETE",
+                    credentials: "include",
+                    body: JSON.stringify({ circuitId }),
+                    headers: { "Content-Type": "application/json" },
+                });
 
-            return true;
-        } catch (error) {
-            console.error("Error in deleting circuit:", error.message);
-            return false;
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+
+                    throw new Error("Deletion failed. Please try again.");
+                }
+
+                // successfully deleted
+                const { msg } = await response.json();
+                // toast(msg);
+
+                return true;
+            } catch (error) {
+                console.error("Error in deleting circuit:", error.message);
+                return false;
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [setIsLoading, isLoggedIn]
+    );
 
     // Function to delete user account
-    const handleDeleteAccount = async (password) => {
-        console.log("Deleting account...");
+    const handleDeleteAccount = useCallback(
+        async (password) => {
+            console.log("Deleting account...");
 
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.deleteAccount, {
-                method: "DELETE",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ password }),
-            });
-
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-
-                throw new Error("Account deletion failed. Please try again.");
+            // if user not logged in
+            if (!isLoggedIn) {
+                return;
             }
 
-            const data = await response.json();
-            console.log("Account deleted successfully:", data.msg);
-            // toast("Account deleted successfully !");
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.deleteAccount, {
+                    method: "DELETE",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password }),
+                });
 
-            // remove all info saved
-            await handleLogout();
-        } catch (error) {
-            console.error("Error in deleting account:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+
+                    throw new Error(
+                        "Account deletion failed. Please try again."
+                    );
+                }
+
+                const data = await response.json();
+                console.log("Account deleted successfully:", data.msg);
+                // toast("Account deleted successfully !");
+
+                // remove all info saved
+                await handleLogout();
+            } catch (error) {
+                console.error("Error in deleting account:", error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [setIsLoading, isLoggedIn]
+    );
 
     // Function to change user password
-    const handleChangePassword = async (currPassword, newPassword) => {
-        console.log("Changing password...");
+    const handleChangePassword = useCallback(
+        async (currPassword, newPassword) => {
+            console.log("Changing password...");
 
-        try {
-            setIsLoading(true);
-            const response = await fetch(ENDPOINTS.changePassword, {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ currPassword, newPassword }),
-            });
-
-            if (!response.ok) {
-                const { msg } = await response.json();
-                toast.error(msg);
-
-                throw new Error("Password changing failed. Please try again.");
+            // if user not logged in
+            if (!isLoggedIn) {
+                return;
             }
 
-            const { msg } = await response.json();
-            toast.success(msg);
-        } catch (error) {
-            console.error("Error in changing password:", error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            try {
+                setIsLoading(true);
+                const response = await fetch(ENDPOINTS.changePassword, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ currPassword, newPassword }),
+                });
+
+                if (!response.ok) {
+                    const { msg } = await response.json();
+                    toast.error(msg);
+
+                    throw new Error(
+                        "Password changing failed. Please try again."
+                    );
+                }
+
+                const { msg } = await response.json();
+                toast.success(msg);
+            } catch (error) {
+                console.error("Error in changing password:", error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [setIsLoading, isLoggedIn]
+    );
 
     // Function to send email ****** not in use
     const handleSendEmail = async (e) => {
@@ -401,21 +452,7 @@ export const AuthProvider = ({ children }) => {
             handleDeleteAccount,
             handleChangePassword,
         }),
-        [
-            isLoading,
-            setIsLoading,
-            isLoggedIn,
-            user,
-            handleSignup,
-            handleLogin,
-            handleLogout,
-            handleGetUserData,
-            handleSaveCircuit,
-            handleGetCircuit,
-            handleDeleteCircuit,
-            handleDeleteAccount,
-            handleChangePassword,
-        ]
+        [isLoading, isLoggedIn, user]
     );
 
     return (

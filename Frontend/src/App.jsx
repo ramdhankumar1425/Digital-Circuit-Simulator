@@ -56,6 +56,12 @@ const Layout = ({ children }) => {
             <AuthProvider>
                 <ReactFlowProvider>
                     <CircuitProvider>
+                        {/* Main */}
+                        <Header />
+                        <main>{children}</main>
+                        <Footer />
+
+                        {/* For errors and info */}
                         <ToastContainer
                             position="bottom-right"
                             autoClose={1000}
@@ -69,9 +75,6 @@ const Layout = ({ children }) => {
                             theme="dark"
                             transition:Bounce
                         />
-                        <Header />
-                        <main>{children}</main>
-                        <Footer />
                         {/* For loading animations */}
                         <Loading />
                     </CircuitProvider>

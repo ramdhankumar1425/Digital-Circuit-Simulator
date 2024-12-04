@@ -1,32 +1,34 @@
-import React from "react";
-import { Handle, Position } from "@xyflow/react";
+import React, { memo, useMemo } from "react";
+import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
 const XnorGateNode = (props) => {
     const { handlePositions } = useCircuit();
-    const rotation = props.data.rotation;
+    const rotation = useMemo(() => props.data.rotation, [props.data.rotation]);
 
     // Calculate dynamic handle positions
-    const handleStyles = {
-        in1: {
-            ...(rotation === 0 && { top: "13px" }),
-            ...(rotation === 90 && { left: "13px" }),
-            ...(rotation === 180 && { top: "13px" }),
-            ...(rotation === 270 && { left: "13px" }),
-        },
-        in2: {
-            ...(rotation === 0 && { top: "37px" }),
-            ...(rotation === 90 && { left: "37px" }),
-            ...(rotation === 180 && { top: "37px" }),
-            ...(rotation === 270 && { left: "37px" }),
-        },
-        out: {
-            ...(rotation === 0 && { top: "25px" }),
-            ...(rotation === 90 && { left: "25px" }),
-            ...(rotation === 180 && { top: "25px" }),
-            ...(rotation === 270 && { left: "25px" }),
-        },
-    };
+    const handleStyles = useMemo(() => {
+        return {
+            in1: {
+                ...(rotation === 0 && { top: "13px" }),
+                ...(rotation === 90 && { left: "13px" }),
+                ...(rotation === 180 && { top: "13px" }),
+                ...(rotation === 270 && { left: "13px" }),
+            },
+            in2: {
+                ...(rotation === 0 && { top: "37px" }),
+                ...(rotation === 90 && { left: "37px" }),
+                ...(rotation === 180 && { top: "37px" }),
+                ...(rotation === 270 && { left: "37px" }),
+            },
+            out: {
+                ...(rotation === 0 && { top: "25px" }),
+                ...(rotation === 90 && { left: "25px" }),
+                ...(rotation === 180 && { top: "25px" }),
+                ...(rotation === 270 && { left: "25px" }),
+            },
+        };
+    }, [rotation]);
 
     return (
         <div className="relative bg-red- 500">
@@ -88,4 +90,4 @@ const XnorGateNode = (props) => {
     );
 };
 
-export default XnorGateNode;
+export default memo(XnorGateNode);

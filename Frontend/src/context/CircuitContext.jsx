@@ -584,13 +584,16 @@ export const CircuitProvider = ({ children }) => {
     }, []);
 
     // Function to handle node and edge selection
-    const onSelectionChange = useCallback((params) => {
-        const selected_nodes = params.nodes.map((node) => node.id);
-        const selected_edges = params.edges.map((edge) => edge.id);
+    const onSelectionChange = useCallback(
+        (params) => {
+            const selected_nodes = params.nodes.map((node) => node.id);
+            const selected_edges = params.edges.map((edge) => edge.id);
 
-        setSelectedNodes(selected_nodes);
-        setSelectedEdges(selected_edges);
-    }, []);
+            setSelectedNodes(selected_nodes);
+            setSelectedEdges(selected_edges);
+        },
+        [nodes, edges, setSelectedNodes, setSelectedEdges]
+    );
 
     // Function to delete selected nodes and edges
     const onDelete = useCallback(() => {
@@ -650,10 +653,15 @@ export const CircuitProvider = ({ children }) => {
 
         setNodes((nds) => nds.concat(newNodes));
         setEdges((eds) => eds.concat(newEdges));
+        console.log("Hello:", newNodes);
+
+        // Clear the copiedNodes and copiedEdges
+        setCopiedNodes([]);
+        setCopiedEdges([]);
     };
 
     // Function to handle node rotation
-    const handleNodeRotation = () => {
+    const handleNodeRotation = useCallback(() => {
         setNodes((nds) =>
             nds.map((node) =>
                 selectedNodes.includes(node.id)
@@ -667,27 +675,30 @@ export const CircuitProvider = ({ children }) => {
                     : node
             )
         );
-    };
+    }, [selectedNodes, selectedEdges, setNodes]);
 
     // To snap nodes to background grid
-    const onNodeDragStop = (event, node) => {
-        if (!snappingEnable) return;
+    const onNodeDragStop = useCallback(
+        (event, node) => {
+            if (!snappingEnable) return;
 
-        const gridSize = 25;
-        const snappedX = Math.round(node.position.x / gridSize) * gridSize;
-        const snappedY = Math.round(node.position.y / gridSize) * gridSize;
+            const gridSize = 25;
+            const snappedX = Math.round(node.position.x / gridSize) * gridSize;
+            const snappedY = Math.round(node.position.y / gridSize) * gridSize;
 
-        setNodes((nds) =>
-            nds.map((nd) =>
-                nd.id == node.id
-                    ? { ...nd, position: { x: snappedX, y: snappedY } }
-                    : nd
-            )
-        );
-    };
+            setNodes((nds) =>
+                nds.map((nd) =>
+                    nd.id == node.id
+                        ? { ...nd, position: { x: snappedX, y: snappedY } }
+                        : nd
+                )
+            );
+        },
+        [snappingEnable, setNodes]
+    );
 
     // to clear circuit
-    const clearCircuit = () => {
+    const clearCircuit = useCallback(() => {
         localStorage.removeItem("dcircuit");
         setNodes([]);
         setEdges([]);
@@ -695,10 +706,17 @@ export const CircuitProvider = ({ children }) => {
         setSelectedEdges([]);
         setCopiedNodes([]);
         setCopiedEdges([]);
-    };
+    }, [
+        setNodes,
+        setEdges,
+        setSelectedNodes,
+        setSelectedEdges,
+        setCopiedNodes,
+        setCopiedEdges,
+    ]);
 
     // to export circuit to png
-    const handleExport = () => {
+    const handleExport = useCallback(() => {
         console.log("Exporting as PNG");
 
         if (!flowRef.current) {
@@ -720,60 +738,59 @@ export const CircuitProvider = ({ children }) => {
                 console.error("Failed to export React Flow as PNG:", error);
                 toast.error("Failed to export flow");
             });
-    };
+    }, []);
 
     // To add/change nodes name
-    const handleNodeNameChange = (nodeId, name) => {
-        setNodes((prevNodes) =>
-            prevNodes.map((prevNode) =>
-                prevNode.id == nodeId
-                    ? {
-                          ...prevNode,
-                          data: {
-                              ...prevNode.data,
-                              name,
-                          },
-                      }
-                    : prevNode
-            )
-        );
-    };
+    const handleNodeNameChange = useCallback(
+        (nodeId, name) => {
+            setNodes((prevNodes) =>
+                prevNodes.map((prevNode) =>
+                    prevNode.id == nodeId
+                        ? {
+                              ...prevNode,
+                              data: {
+                                  ...prevNode.data,
+                                  name,
+                              },
+                          }
+                        : prevNode
+                )
+            );
+        },
+        [setNodes]
+    );
 
     // to limit connection on a handle
-    const handleLimitConnections = (handleType, nodeId, handleId, limit) => {
-        const existingConnectionCount = edges.filter(
-            (edge) =>
-                (handleType == "source" &&
-                    edge.source == nodeId &&
-                    edge.sourceHandle == handleId) ||
-                (handleType == "target" &&
-                    edge.target == nodeId &&
-                    edge.targetHandle == handleId)
-        )?.length;
+    const handleLimitConnections = useCallback(
+        (handleType, nodeId, handleId, limit) => {
+            const existingConnectionCount = edges.filter(
+                (edge) =>
+                    (handleType == "source" &&
+                        edge.source == nodeId &&
+                        edge.sourceHandle == handleId) ||
+                    (handleType == "target" &&
+                        edge.target == nodeId &&
+                        edge.targetHandle == handleId)
+            )?.length;
 
-        return existingConnectionCount < limit;
-    };
+            return existingConnectionCount < limit;
+        },
+        [edges]
+    );
 
     // Keydown event listener to handle key presses
+    const handleKeyDown = (event) => {
+        if (event.key === "Delete") {
+            onDelete();
+        } else if (event.ctrlKey && (event.key === "C" || event.key === "c")) {
+            onCopy();
+        } else if (event.ctrlKey && (event.key === "V" || event.key === "v")) {
+            onPaste();
+        } else if (event.key === "R" || event.key === "r") {
+            handleNodeRotation();
+        }
+    };
     useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === "Delete") {
-                onDelete();
-            } else if (
-                event.ctrlKey &&
-                (event.key === "C" || event.key === "c")
-            ) {
-                onCopy();
-            } else if (
-                event.ctrlKey &&
-                (event.key === "V" || event.key === "v")
-            ) {
-                onPaste();
-            } else if (event.key === "R" || event.key === "r") {
-                handleNodeRotation();
-            }
-        };
-
         window.addEventListener("keydown", handleKeyDown);
 
         return () => {
@@ -854,23 +871,21 @@ export const CircuitProvider = ({ children }) => {
             edges,
             selectedNodes,
             selectedEdges,
+            copiedNodes,
+            copiedEdges,
+            handlePositions,
+            theme,
+            gridVisible,
+            snappingEnable,
             onNodesChange,
             onEdgesChange,
             onConnect,
             onDrop,
+            onDragOver,
             onSelectionChange,
             onNodeDragStop,
-            handlePositions,
             clearCircuit,
-            theme,
-            setTheme,
             handleExport,
-            gridVisible,
-            setGridVisible,
-            snappingEnable,
-            setSnappingEnable,
-            handleNodeNameChange,
-            handleLimitConnections,
         ]
     );
 

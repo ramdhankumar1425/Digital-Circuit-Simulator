@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
 const JKFFNode = () => {
@@ -101,4 +101,4 @@ const JKFFNode = () => {
     );
 };
 
-export default JKFFNode;
+export default memo(JKFFNode);

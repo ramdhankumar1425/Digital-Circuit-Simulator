@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
@@ -224,4 +224,4 @@ const SevenSegmentDisplayNode = (props) => {
     );
 };
 
-export default SevenSegmentDisplayNode;
+export default memo(SevenSegmentDisplayNode);

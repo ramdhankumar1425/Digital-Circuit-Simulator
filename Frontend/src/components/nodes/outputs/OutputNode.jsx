@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
@@ -85,4 +85,4 @@ const OutputNode = (props) => {
     );
 };
 
-export default OutputNode;
+export default memo(OutputNode);

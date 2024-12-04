@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const FourBitFullAdderNode = (props) => {
+const FourBitFullAdderNode = () => {
     return (
         <div className="relative bg-red-500">
             {/* SVG */}
@@ -166,4 +166,4 @@ const FourBitFullAdderNode = (props) => {
     );
 };
 
-export default FourBitFullAdderNode;
+export default memo(FourBitFullAdderNode);

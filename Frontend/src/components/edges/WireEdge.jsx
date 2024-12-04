@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { BaseEdge, getSmoothStepPath } from "@xyflow/react";
 import { useCircuit } from "../../context/CircuitContext";
 
@@ -11,18 +11,21 @@ const WireEdge = ({
     sourcePosition,
     targetPosition,
     style = {},
-    markerEnd,
 }) => {
     const { nodes, setNodes, edges, setEdges } = useCircuit();
     const [edgeValue, setEdgeValue] = useState(false);
-    const [edgePath] = getSmoothStepPath({
-        sourceX,
-        sourceY,
-        sourcePosition,
-        targetX,
-        targetY,
-        targetPosition,
-    });
+    const [edgePath] = useMemo(
+        () =>
+            getSmoothStepPath({
+                sourceX,
+                sourceY,
+                sourcePosition,
+                targetX,
+                targetY,
+                targetPosition,
+            }),
+        [sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition]
+    );
 
     const edge = useMemo(() => edges.find((edge) => edge.id == id), [edges]);
     const sourceNode = useMemo(
@@ -110,7 +113,6 @@ const WireEdge = ({
     return (
         <BaseEdge
             path={edgePath}
-            markerEnd={markerEnd}
             style={{
                 ...style,
                 stroke: edgeValue ? "#07ed44" : "#6b6261",
@@ -121,4 +123,4 @@ const WireEdge = ({
     );
 };
 
-export default WireEdge;
+export default memo(WireEdge);

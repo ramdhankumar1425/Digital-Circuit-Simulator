@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
@@ -7,7 +7,7 @@ const ConstantInputNode = (props) => {
     const { setNodes, handleNodeNameChange, handlePositions, theme } =
         useCircuit();
 
-    const handleToggleOutput = () => {
+    const handleToggleOutput = useCallback(() => {
         setNodes((prevNodes) =>
             prevNodes.map((node) =>
                 node.id == props.id
@@ -24,7 +24,7 @@ const ConstantInputNode = (props) => {
                     : node
             )
         );
-    };
+    }, []);
 
     return (
         <div
@@ -93,4 +93,4 @@ const ConstantInputNode = (props) => {
     );
 };
 
-export default ConstantInputNode;
+export default memo(ConstantInputNode);

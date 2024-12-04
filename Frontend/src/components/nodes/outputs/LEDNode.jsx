@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useCircuit } from "../../../context/CircuitContext";
 import { Handle } from "@xyflow/react";
 
@@ -52,4 +52,4 @@ const LEDNode = (props) => {
     );
 };
 
-export default LEDNode;
+export default memo(LEDNode);

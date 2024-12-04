@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
 const TffNode = () => {
@@ -85,4 +85,4 @@ const TffNode = () => {
     );
 };
 
-export default TffNode;
+export default memo(TffNode);

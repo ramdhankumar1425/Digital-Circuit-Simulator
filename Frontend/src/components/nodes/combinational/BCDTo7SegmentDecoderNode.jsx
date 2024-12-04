@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
 const BCDTo7SegmentDecoderNode = (props) => {
@@ -139,4 +139,4 @@ const BCDTo7SegmentDecoderNode = (props) => {
     );
 };
 
-export default BCDTo7SegmentDecoderNode;
+export default memo(BCDTo7SegmentDecoderNode);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useCircuit } from "../../context/CircuitContext";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
@@ -51,4 +51,4 @@ const SaveCircuitPopup = ({ isOpen, setIsPopupOpen }) => {
     );
 };
 
-export default SaveCircuitPopup;
+export default memo(SaveCircuitPopup);

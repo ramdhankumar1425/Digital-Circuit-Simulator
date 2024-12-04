@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
@@ -14,7 +14,7 @@ const ClockNode = (props) => {
     const [freq, setFreq] = useState(1);
 
     // Function to toogle b/w 0-1
-    const handleToggleOutput = () => {
+    const handleToggleOutput = useCallback(() => {
         setNodes((prevNodes) =>
             prevNodes.map((node) =>
                 node.id == props.id
@@ -32,7 +32,7 @@ const ClockNode = (props) => {
                     : node
             )
         );
-    };
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -127,4 +127,4 @@ const ClockNode = (props) => {
     );
 };
 
-export default ClockNode;
+export default memo(ClockNode);

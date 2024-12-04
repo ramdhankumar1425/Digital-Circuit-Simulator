@@ -1,5 +1,5 @@
-import React from "react";
-import { Handle, Position } from "@xyflow/react";
+import React, { memo } from "react";
+import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 
 const NotGateNode = (props) => {
@@ -57,4 +57,4 @@ const NotGateNode = (props) => {
     );
 };
 
-export default NotGateNode;
+export default memo(NotGateNode);

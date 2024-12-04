@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const FourToOneMuxNode = (props) => {
+const FourToOneMuxNode = () => {
     return (
         <div className="relative">
             {/* SVG */}
@@ -93,4 +93,4 @@ const FourToOneMuxNode = (props) => {
     );
 };
 
-export default FourToOneMuxNode;
+export default memo(FourToOneMuxNode);

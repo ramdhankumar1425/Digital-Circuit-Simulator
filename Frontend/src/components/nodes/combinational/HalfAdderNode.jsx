@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
 
-const HalfAdderNode = (props) => {
+const HalfAdderNode = () => {
     return (
         <div className="relative">
             {/* SVG */}
@@ -63,4 +63,4 @@ const HalfAdderNode = (props) => {
     );
 };
 
-export default HalfAdderNode;
+export default memo(HalfAdderNode);

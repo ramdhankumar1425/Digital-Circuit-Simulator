@@ -553,6 +553,7 @@ export const CircuitProvider = ({ children }) => {
                         type: nodeType,
                         position,
                         data: {
+                            name: "",
                             label: nodeType,
                             inputs: initialInputs,
                             outputs: initialOutputs,
@@ -568,6 +569,7 @@ export const CircuitProvider = ({ children }) => {
                         type: nodeType,
                         position,
                         data: {
+                            name: "",
                             label: nodeType,
                             inputs: initialInputs,
                             outputs: initialOutputs,
@@ -736,6 +738,22 @@ export const CircuitProvider = ({ children }) => {
             });
     };
 
+    const handleNodeNameChange = (nodeId, name) => {
+        setNodes((prevNodes) =>
+            prevNodes.map((prevNode) =>
+                prevNode.id == nodeId
+                    ? {
+                          ...prevNode,
+                          data: {
+                              ...prevNode.data,
+                              name,
+                          },
+                      }
+                    : prevNode
+            )
+        );
+    };
+
     // Keydown event listener to handle key presses
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -827,6 +845,7 @@ export const CircuitProvider = ({ children }) => {
             snappingEnable,
             setSnappingEnable,
             freqBounds,
+            handleNodeNameChange,
         }),
         [
             flowRef,
@@ -849,6 +868,7 @@ export const CircuitProvider = ({ children }) => {
             setGridVisible,
             snappingEnable,
             setSnappingEnable,
+            handleNodeNameChange,
         ]
     );
 

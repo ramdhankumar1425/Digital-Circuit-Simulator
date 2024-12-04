@@ -4,8 +4,8 @@ import { useCircuit } from "../../../context/CircuitContext";
 
 const ConstantInputNode = (props) => {
     const [showToolbar, setShowToolbar] = useState(false);
-    const [name, setName] = useState("");
-    const { setNodes, handlePositions, theme } = useCircuit();
+    const { setNodes, handleNodeNameChange, handlePositions, theme } =
+        useCircuit();
 
     const handleToggleOutput = () => {
         setNodes((prevNodes) =>
@@ -25,23 +25,6 @@ const ConstantInputNode = (props) => {
             )
         );
     };
-
-    // to set name
-    useEffect(() => {
-        setNodes((prevNodes) =>
-            prevNodes.map((prevNode) =>
-                prevNode.id == props.id
-                    ? {
-                          ...prevNode,
-                          data: {
-                              ...prevNode.data,
-                              name,
-                          },
-                      }
-                    : prevNode
-            )
-        );
-    }, [name]);
 
     return (
         <div
@@ -83,7 +66,9 @@ const ConstantInputNode = (props) => {
 
             {/* Name */}
             <p
-                className={`absolute left-1/2 -translate-x-1/2 font-semibold text-2xl ${
+                className={`absolute left-1/2 -translate-x-1/2 ${
+                    props?.data?.rotation == 90 ? "bottom-[105%]" : "top-[105%]"
+                } font-semibold text-base ${
                     theme == "dark" ? "text-gray-200" : "text-gray-800"
                 }`}
             >
@@ -96,8 +81,10 @@ const ConstantInputNode = (props) => {
                     <label className="text-sm font-semibold">Name:</label>
                     <input
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={props.data?.name}
+                        onChange={(e) =>
+                            handleNodeNameChange(props.id, e.target.value)
+                        }
                         className="block w-24 p-1 mt-1 border rounded"
                     />
                 </div>

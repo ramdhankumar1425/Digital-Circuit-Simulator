@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ReactFlowProvider } from "@xyflow/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -53,26 +54,28 @@ const Layout = ({ children }) => {
     return (
         <>
             <AuthProvider>
-                <CircuitProvider>
-                    <ToastContainer
-                        position="bottom-right"
-                        autoClose={1000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="dark"
-                        transition:Bounce
-                    />
-                    <Header />
-                    <main>{children}</main>
-                    <Footer />
-                    {/* For loading animations */}
-                    <Loading />
-                </CircuitProvider>
+                <ReactFlowProvider>
+                    <CircuitProvider>
+                        <ToastContainer
+                            position="bottom-right"
+                            autoClose={1000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="dark"
+                            transition:Bounce
+                        />
+                        <Header />
+                        <main>{children}</main>
+                        <Footer />
+                        {/* For loading animations */}
+                        <Loading />
+                    </CircuitProvider>
+                </ReactFlowProvider>
             </AuthProvider>
 
             {/* Vercel Analytics */}

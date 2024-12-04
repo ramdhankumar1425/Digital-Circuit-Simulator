@@ -4,7 +4,12 @@ import { useCircuit } from "../../../context/CircuitContext";
 
 const OutputNode = (props) => {
     const [showToolbar, setShowToolbar] = useState(false);
-    const { handleNodeNameChange, handlePositions, theme } = useCircuit();
+    const {
+        handleNodeNameChange,
+        handlePositions,
+        theme,
+        handleLimitConnections,
+    } = useCircuit();
 
     return (
         <div
@@ -36,11 +41,17 @@ const OutputNode = (props) => {
                 id="in1"
                 position={handlePositions.left[props.data.rotation]}
                 className="bg-[#555] hover:bg-green-500"
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "in1",
+                    1
+                )}
             />
 
             {/* Value */}
             <p className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 font-semibold text-2xl">
-                {props.data?.inputs?.in1 ? 1 : 0}
+                {props.data?.outputs?.out ? 1 : 0}
             </p>
 
             {/* Name */}

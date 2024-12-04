@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Handle } from "@xyflow/react";
 import { useCircuit } from "../../../context/CircuitContext";
 

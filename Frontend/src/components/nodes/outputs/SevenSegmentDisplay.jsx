@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
+import { useCircuit } from "../../../context/CircuitContext";
 
 const SevenSegmentDisplayNode = (props) => {
+    const { handleLimitConnections } = useCircuit();
     const [values, setValues] = useState({
         a: false,
         b: false,
@@ -120,6 +122,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Top}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "45px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "a",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -127,6 +135,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Top}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "61px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "b",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -134,6 +148,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Bottom}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "45px", bottom: "1px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "c",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -141,6 +161,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Bottom}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "29px", bottom: "1px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "d",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -148,6 +174,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Bottom}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "12px", bottom: "1px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "e",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -155,6 +187,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Top}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "29px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "f",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -162,6 +200,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Top}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "12px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "g",
+                    1
+                )}
             />
             <Handle
                 type="target"
@@ -169,6 +213,12 @@ const SevenSegmentDisplayNode = (props) => {
                 position={Position.Bottom}
                 className="bg-[#555] hover:bg-green-500"
                 style={{ position: "absolute", left: "61px", bottom: "1px" }}
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "dp",
+                    1
+                )}
             />
         </div>
     );

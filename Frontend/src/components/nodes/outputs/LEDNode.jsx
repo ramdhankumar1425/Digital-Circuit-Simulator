@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Handle, Position } from "@xyflow/react";
+import React from "react";
 import { useCircuit } from "../../../context/CircuitContext";
+import { Handle } from "@xyflow/react";
 
 const LEDNode = (props) => {
-    const { handlePositions } = useCircuit();
-    const [value, setValue] = useState(0);
-
-    // To set the ON/OFF state of LED
-    useEffect(() => {
-        setValue(props.data.outputs.out);
-    }, [props]);
+    const { handlePositions, handleLimitConnections } = useCircuit();
 
     return (
         <div className="relative">
@@ -35,8 +29,7 @@ const LEDNode = (props) => {
                        C40 37, 45 32, 45 25
                        Z
                        M 16 25 L 0 25"
-                    fill={value == 1 ? "yellow" : "#333333"}
-                    // stroke={value == 1 ? "yellow" : "#333333"}
+                    fill={props.data?.outputs?.out == 1 ? "yellow" : "#333333"}
                     stroke="black"
                     strokeWidth="0.6"
                 />
@@ -48,6 +41,12 @@ const LEDNode = (props) => {
                 id="in1"
                 position={handlePositions.left[props.data.rotation]}
                 className="bg-[#555] hover:bg-green-500"
+                isConnectable={handleLimitConnections(
+                    "target",
+                    props.id,
+                    "in1",
+                    1
+                )}
             />
         </div>
     );

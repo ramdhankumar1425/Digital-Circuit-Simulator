@@ -8,10 +8,11 @@ import {
     useRef,
 } from "react";
 import {
-    applyNodeChanges,
-    applyEdgeChanges,
     addEdge,
     Position,
+    useNodesState,
+    useEdgesState,
+    useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { toPng } from "html-to-image";
@@ -448,13 +449,17 @@ export const nodeRegistry = {
 
 // Circuit Provider for "CircuitContext"
 export const CircuitProvider = ({ children }) => {
+    const { screenToFlowPosition } = useReactFlow();
+
     const flowRef = useRef(null);
-    const [nodes, setNodes] = useState([]);
-    const [edges, setEdges] = useState([]);
+
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [selectedNodes, setSelectedNodes] = useState([]);
     const [selectedEdges, setSelectedEdges] = useState([]);
     const [copiedNodes, setCopiedNodes] = useState([]);
     const [copiedEdges, setCopiedEdges] = useState([]);
+
     const [theme, setTheme] = useState("dark");
     const [gridVisible, setGridVisible] = useState(true);
     const [snappingEnable, setSnappingEnable] = useState(true);
@@ -493,19 +498,6 @@ export const CircuitProvider = ({ children }) => {
         },
     };
 
-    // Functions to handle Canvas change
-    // For any change in nodes
-    const onNodesChange = useCallback(
-        (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-        []
-    );
-
-    // For any change in edges
-    const onEdgesChange = useCallback(
-        (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-        []
-    );
-
     // For new edge creation
     const onConnect = useCallback(
         (params) =>
@@ -527,15 +519,15 @@ export const CircuitProvider = ({ children }) => {
     const onDrop = useCallback(
         (event) => {
             event.preventDefault();
-            const reactFlowBounds = event.target.getBoundingClientRect();
+
             const nodeType = event.dataTransfer.getData(
                 "application/reactflow"
             );
 
-            const position = {
-                x: event.clientX - reactFlowBounds.left,
-                y: event.clientY - reactFlowBounds.top,
-            };
+            const position = screenToFlowPosition({
+                x: event.clientX,
+                y: event.clientY,
+            });
 
             const config = nodeRegistry[nodeType];
             if (!config) return;
@@ -602,14 +594,13 @@ export const CircuitProvider = ({ children }) => {
 
     // Function to delete selected nodes and edges
     const onDelete = useCallback(() => {
-        const newNodes = nodes.filter(
-            (node) => !selectedNodes.includes(node.id)
+        setNodes((prevNodes) =>
+            prevNodes.filter((prevNode) => !selectedNodes.includes(prevNode.id))
         );
-        const newEdges = edges.filter(
-            (edge) => !selectedEdges.includes(edge.id)
+
+        setEdges((prevEdges) =>
+            prevEdges.filter((prevEdge) => !selectedEdges.includes(prevEdge.id))
         );
-        setNodes(newNodes);
-        setEdges(newEdges);
     }, [nodes, edges, selectedNodes, selectedEdges]);
 
     // Function to copy selected nodes and edges
@@ -620,17 +611,14 @@ export const CircuitProvider = ({ children }) => {
 
     // Function to paste copied nodes and edges
     const onPaste = () => {
-        const oldNodes = copiedNodes.map((copiedNodeId) =>
-            nodes.find((node) => node.id == copiedNodeId)
-        );
-        const oldEdges = copiedEdges.map((copiedEdgeId) =>
-            edges.find((edge) => edge.id == copiedEdgeId)
-        );
+        const oldNodes = nodes.filter((node) => copiedNodes.includes(node.id));
+        const oldEdges = edges.filter((edge) => copiedEdges.includes(edge.id));
 
         const oldVSNewNodes = [];
-        const newNodes = oldNodes.map((oldNode) => {
+
+        const newNodes = oldNodes.map((oldNode, idx) => {
             const oldId = oldNode.id;
-            const newId = `${oldNode.type}-${+new Date()}`;
+            const newId = `${oldNode.type}-${+new Date()}-${idx}-copy`;
 
             oldVSNewNodes.push({ oldId, newId });
 
@@ -644,7 +632,7 @@ export const CircuitProvider = ({ children }) => {
             };
         });
 
-        const newEdges = oldEdges.map((oldEdge) => {
+        const newEdges = oldEdges.map((oldEdge, idx) => {
             const newTargetNodeId = oldVSNewNodes.find(
                 (oldVSNewNode) => oldVSNewNode.oldId == oldEdge.target
             )?.newId;
@@ -654,7 +642,7 @@ export const CircuitProvider = ({ children }) => {
 
             return {
                 ...oldEdge,
-                id: oldEdge.id + `copy-${+new Date()}`,
+                id: oldEdge.id + `${idx}-copy-${+new Date()}`,
                 target: newTargetNodeId ? newTargetNodeId : oldEdge.target,
                 source: newSourceNodeId ? newSourceNodeId : oldEdge.source,
             };
@@ -674,10 +662,6 @@ export const CircuitProvider = ({ children }) => {
                           data: {
                               ...node.data,
                               rotation: (node?.data?.rotation + 90) % 360,
-                          },
-                          measured: {
-                              ...node.measured,
-                              width: node.measured.width + 1,
                           },
                       }
                     : node
@@ -738,6 +722,7 @@ export const CircuitProvider = ({ children }) => {
             });
     };
 
+    // To add/change nodes name
     const handleNodeNameChange = (nodeId, name) => {
         setNodes((prevNodes) =>
             prevNodes.map((prevNode) =>
@@ -752,6 +737,21 @@ export const CircuitProvider = ({ children }) => {
                     : prevNode
             )
         );
+    };
+
+    // to limit connection on a handle
+    const handleLimitConnections = (handleType, nodeId, handleId, limit) => {
+        const existingConnectionCount = edges.filter(
+            (edge) =>
+                (handleType == "source" &&
+                    edge.source == nodeId &&
+                    edge.sourceHandle == handleId) ||
+                (handleType == "target" &&
+                    edge.target == nodeId &&
+                    edge.targetHandle == handleId)
+        )?.length;
+
+        return existingConnectionCount < limit;
     };
 
     // Keydown event listener to handle key presses
@@ -846,6 +846,7 @@ export const CircuitProvider = ({ children }) => {
             setSnappingEnable,
             freqBounds,
             handleNodeNameChange,
+            handleLimitConnections,
         }),
         [
             flowRef,
@@ -869,6 +870,7 @@ export const CircuitProvider = ({ children }) => {
             snappingEnable,
             setSnappingEnable,
             handleNodeNameChange,
+            handleLimitConnections,
         ]
     );
 

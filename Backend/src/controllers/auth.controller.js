@@ -88,7 +88,7 @@ const handleLogin = async (req, res) => {
         res.cookie("authToken", authToken, {
             httpOnly: true, // Prevents access to the cookie via JavaScript
             secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            sameSite: "None",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         });
 
@@ -110,7 +110,7 @@ const handleLogout = (req, res) => {
         res.clearCookie("authToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            sameSite: "None",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         });
 
         console.log("Logout successful");

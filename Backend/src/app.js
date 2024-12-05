@@ -19,16 +19,18 @@ const {
     handleDeleteUser,
     handleChangePassword,
 } = require("./controllers/user.controller.js");
-const { handleSendEmail } = require("./controllers/utils.controller.js");
+// const { handleSendEmail } = require("./controllers/utils.controller.js");
 
 // initialize express
 const app = express();
 
 // middlewares
-app.use(
+app.options(
+    "*",
     cors({
         origin: process.env.CLIENT_URI,
-        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true, // Include credentials (cookies)
     })
 );
 app.use(express.json());

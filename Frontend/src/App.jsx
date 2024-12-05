@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ReactFlowProvider } from "@xyflow/react";
 import { ToastContainer } from "react-toastify";
@@ -9,7 +10,8 @@ import { Analytics } from "@vercel/analytics/react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
-import Simulator from "./pages/Simulator";
+// import Simulator from "./pages/Simulator";
+const Simulator = React.lazy(() => import("./pages/Simulator")); // lazy loaded for faster loads
 import TTGenerator from "./pages/TTGenerator";
 import BooleanExpGenerator from "./pages/BooleanExpGenerator";
 import ContactUs from "./pages/ContactUs";
@@ -17,6 +19,7 @@ import { Login, Signup } from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Loading from "./components/Loading.jsx";
+import FallbackLoading from "./components/FallbackLoading.jsx";
 
 function App() {
     return (
@@ -25,10 +28,21 @@ function App() {
                 <Routes>
                     <Route path="/">
                         <Route index element={<HomePage />} />
-                        <Route path="simulator" element={<Simulator />} />
+                        <Route
+                            path="simulator"
+                            element={
+                                <React.Suspense fallback={<FallbackLoading />}>
+                                    <Simulator />
+                                </React.Suspense>
+                            }
+                        />
                         <Route
                             path="simulator/:circuitId"
-                            element={<Simulator />}
+                            element={
+                                <React.Suspense fallback={<FallbackLoading />}>
+                                    <Simulator />
+                                </React.Suspense>
+                            }
                         />
                         <Route
                             path="truth-table-generator"
@@ -53,9 +67,9 @@ function App() {
 const Layout = ({ children }) => {
     return (
         <>
-            <AuthProvider>
-                <ReactFlowProvider>
-                    <CircuitProvider>
+            <ReactFlowProvider>
+                <CircuitProvider>
+                    <AuthProvider>
                         {/* Main */}
                         <Header />
                         <main>{children}</main>
@@ -75,11 +89,11 @@ const Layout = ({ children }) => {
                             theme="dark"
                             transition:Bounce
                         />
-                        {/* For loading animations */}
+                        {/* For api loading animations */}
                         <Loading />
-                    </CircuitProvider>
-                </ReactFlowProvider>
-            </AuthProvider>
+                    </AuthProvider>
+                </CircuitProvider>
+            </ReactFlowProvider>
 
             {/* Vercel Analytics */}
             <Analytics />

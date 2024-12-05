@@ -4,7 +4,7 @@ import { useCircuit } from "../../../context/CircuitContext";
 
 const ConstantInputNode = (props) => {
     const [showToolbar, setShowToolbar] = useState(false);
-    const { setNodes, handleNodeNameChange, handlePositions, theme } =
+    const { setNodes, handlePositions, handleNodeNameChange, theme } =
         useCircuit();
 
     const handleToggleOutput = useCallback(() => {
@@ -82,9 +82,9 @@ const ConstantInputNode = (props) => {
                     <input
                         type="text"
                         value={props.data?.name}
-                        onChange={(e) =>
-                            handleNodeNameChange(props.id, e.target.value)
-                        }
+                        onChange={(e) => {
+                            handleNodeNameChange(props.id, e.target.value);
+                        }}
                         className="block w-24 p-1 mt-1 border rounded"
                     />
                 </div>

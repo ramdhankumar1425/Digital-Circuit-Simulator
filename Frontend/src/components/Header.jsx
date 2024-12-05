@@ -1,12 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { HiChevronDown } from "react-icons/hi";
 import { SlMenu } from "react-icons/sl";
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
     const { isLoggedIn } = useAuth();
+
+    // detect navigations
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [location]);
 
     return (
         <nav className="w-full h-16 bg-gray-900 flex items-center justify-between px-5 md:px-20 text-gray-300 border-b border-gray-700">
@@ -17,17 +23,17 @@ const Header = () => {
                 </Link>
             </div>
 
-            {/* Hamburger Menu for Small Screens */}
+            {/* Hamburger Menu Button for Small Screens */}
             <div className="md:hidden z-[1000]">
                 <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    onClick={() => setIsMenuOpen((prev) => !prev)}
                     className="text-gray-300 focus:outline-none flex items-center"
                 >
                     <SlMenu className="font-bold text-lg" />
                 </button>
             </div>
 
-            {/* Links */}
+            {/* Links for larger screens */}
             <ul className="hidden md:flex items-center gap-10 text-lg">
                 <li className="hover:text-gray-400 duration-100 cursor-pointer">
                     <Link to="/" className="block">
@@ -63,29 +69,17 @@ const Header = () => {
                 <div className="absolute top-16 left-0 w-full bg-gray-900 shadow-lg md:hidden z-[100]">
                     <ul className="flex flex-col items-center gap-5 py-5 text-lg">
                         <li className="hover:text-gray-400 duration-100 cursor-pointer">
-                            <Link
-                                to="/"
-                                className="block"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
+                            <Link to="/" className="block">
                                 Home
                             </Link>
                         </li>
                         <li className="hover:text-gray-400 duration-100 cursor-pointer">
-                            <Link
-                                to="/simulator"
-                                className="block"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
+                            <Link to="/simulator" className="block">
                                 Simulator
                             </Link>
                         </li>
                         <li className="hover:text-gray-400 duration-100 cursor-pointer">
-                            <Link
-                                to="/contact"
-                                className="block"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
+                            <Link to="/contact" className="block">
                                 Contact Us
                             </Link>
                         </li>
@@ -96,7 +90,6 @@ const Header = () => {
                                 <Link
                                     to="/login"
                                     className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2 text-center"
-                                    onClick={() => setIsMenuOpen(false)}
                                 >
                                     Login
                                 </Link>

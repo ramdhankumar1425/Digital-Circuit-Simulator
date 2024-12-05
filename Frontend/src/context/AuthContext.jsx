@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useCircuit } from "./CircuitContext";
 
 const AuthContext = createContext();
 
@@ -16,6 +17,8 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+
+    const { clearCircuit } = useCircuit();
 
     // backend endpoints
     const BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -145,7 +148,7 @@ export const AuthProvider = ({ children }) => {
 
             console.log("Logout successful:", data.msg);
 
-            localStorage.removeItem("user");
+            clearCircuit();
             setUser(null);
             setIsLoggedIn(false);
 

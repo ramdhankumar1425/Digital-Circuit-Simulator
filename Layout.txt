@@ -1,0 +1,19 @@
+Backend
+├── node_modules/
+├── src
+│   ├── controllers
+│   │   ├── auth.controller.js        # Handles signup, login, logout routes
+│   │   ├── circuit.controller.js     # Handles get, save, delete circuit routes
+│   │   ├── user.controller.js        # Handles get user data, change password, delete user
+│   │   └── utils.controller.js       # (not in use)
+│   ├── middlewares
+│   │   └── auth.middleware.js        # AuthGuard middleware for protecting routes
+│   ├── models
+│   │   ├── circuit.model.js          # CircuitModel: {name, data, user reference}
+│   │   └── user.model.js             # UserModel: {username, email, password, circuits array by reference}
+│   ├── app.js                        # Defines all routes, CORS, cookie parser, middlewares
+│   └── index.js                      # Entry point: dotenv config, DB connection, server listener
+├── .env                               # Environment variables
+├── .gitignore                         # Git ignore file
+├── package-lock.json                  # Auto-generated dependencies lock file
+└── package.json                       # Project dependencies and scripts

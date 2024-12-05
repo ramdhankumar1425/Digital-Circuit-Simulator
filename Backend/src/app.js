@@ -25,8 +25,7 @@ const {
 const app = express();
 
 // middlewares
-app.options(
-    "*",
+app.use(
     cors({
         origin: process.env.CLIENT_URI,
         methods: ["GET", "POST", "PUT", "DELETE"],

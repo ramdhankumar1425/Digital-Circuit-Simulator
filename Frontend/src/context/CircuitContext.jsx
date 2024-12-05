@@ -653,7 +653,6 @@ export const CircuitProvider = ({ children }) => {
 
         setNodes((nds) => nds.concat(newNodes));
         setEdges((eds) => eds.concat(newEdges));
-        console.log("Hello:", newNodes);
 
         // Clear the copiedNodes and copiedEdges
         setCopiedNodes([]);
